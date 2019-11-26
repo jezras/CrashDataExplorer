@@ -216,7 +216,7 @@ li {
   height: 100px;
   width: 100px;
   z-index: 2;
-  background: url("images/loading.gif");
+  background: url("../images/loading.gif");
   background-repeat: no-repeat;
   background-size: 100px 100px;
   display: none;
