@@ -1,0 +1,676 @@
+body {
+  background-color:#152238;
+  font-family: 'Quicksand', 'Open Sans', sans-serif;
+  font-size:11px;
+  margin:0;
+}
+a {
+  color:#bb0000;
+}
+a:hover {
+  color: #002654;
+}
+ul {
+  margin: 0;
+  padding: 0;
+}
+li {
+  margin: 0;
+  padding: 0;
+}
+/*
+OUTER FRAMING AND NAV
+*/
+.container {
+  background-color:#ddd;
+  height: 100%;
+  padding: 6px 12px 10px 12px;
+  border: 1px solid #000;
+  border-radius: 20px;
+}
+.main {
+  width:1078px;
+  padding:5px 5px 5px 5px;
+  margin:auto;
+}
+.mainTitle {
+  position: relative;
+  height: 25px;
+  width: 900px;
+  float:left;
+  font-size:22px;
+  font-weight:bold;
+  color: #000;
+  padding-bottom:5px;
+}
+.navRight {
+  position: relative;
+  height: 25px;
+  width: 105px;
+  float:left;
+  font-size:14px;
+  font-weight:normal;
+  text-align:right;
+  color: #000;
+}
+.containerTitle {
+  position: relative;
+  width: 1054px;
+}
+.containerBody {
+  position: relative;
+  height: 562px;
+  width: 1054px;
+  clear:both;
+  background-color:#fff;
+}
+/*
+LEFT PANEL
+*/
+.leftPanel {
+  position: relative;
+  height: 562px;
+  width: 600px;
+  float: left;
+}
+#map {
+  height: 560px;
+  width: 600px;
+  z-index: 1;
+  float: left;
+  border-style: solid;
+  border-width: 1px 1px 1px 1px;
+  border-color: #333;
+  background-color:#fff;
+}
+#loading {
+  position: absolute;
+  top: 220px;
+  left: 240px; 
+  height: 100px;
+  width: 100px;
+  z-index: 2;
+  background: url("../images/loading.gif");
+  background-repeat: no-repeat;
+  background-size: 100px 100px;
+  display: none;
+}
+/*
+RIGHT PANEL
+*/
+.rightPanel {
+  position: relative;
+  height: 560px;
+  width: 452px;
+  float: left;
+  border-style: solid;
+  border-width: 1px 1px 1px 1px;
+  border-color: #000;
+}
+.blockTime {
+  display:block;
+  width: 442px;
+  height:70px;
+  padding: 2px 2px 2px 8px;
+  border-bottom: 1px solid #333;
+}
+.titleTime {
+  height: 30px;
+  width: 446px;
+}
+.legendNavTime {
+  height: 38px;
+  width: 446px;
+}
+.navigationTime {
+  height: 38px;
+  width: 446px;
+}
+#buttonRowYear {
+  font-size:12px;
+  margin-left:70px;
+  width:320px;
+  height:10px;
+}
+.blockTrans {
+  display:block;
+  width: 442px;
+  height:198px;
+  padding: 2px 2px 2px 8px;
+  border-bottom: 1px solid #333;
+}
+.titleTrans {
+  height: 30px;
+  width: 446px;
+}
+.legendNavTrans {
+  height: 168px;
+  width: 446px;
+}
+.navigationTrans {
+  height: 168px;
+  width: 310px;
+  float:left;
+}
+.legendTrans {
+  height: 168px;
+  width: 134px;
+  float:left;
+}
+.blockClick {
+  display:block;
+  height: 38px;
+  width: 442px;
+  padding: 2px 2px 2px 8px;
+  border-bottom: 1px solid #333;
+}
+.titleClick {
+  height: 34px;
+  width: 446px;
+}
+.blockDemo {
+  display:block;
+  width: 442px;
+  height:172px;
+  padding: 2px 2px 2px 8px;
+}
+.titleDemo {
+  height: 30px;
+  width: 446px;
+}
+.legendNavDemo {
+  height: 145px;
+  width: 446px;
+}
+.navigationDemo {
+  height: 145px;
+  width: 310px;
+  float: left;
+}
+.legendDemo {
+  height: 145px;
+  width: 134px;
+  float: left;
+}
+.blockCommunity {
+  display:block;
+  height: 56px;
+  width: 442px;
+  padding: 2px 2px 2px 8px;
+  border-bottom: 1px solid #333;
+}
+.titleCommunity {
+  height: 22px;
+  width: 446px;
+}
+.buttonRowCommunity {
+  margin:4px 2px 2px 134px;
+  font-size: 13px !important;
+}
+.legendNavTime {
+  height: 30px;
+  width: 446px;
+}
+.navigationTime {
+  height: 30px;
+  width: 446px;
+}
+#legendCensus {
+  line-height: 16px;
+  font-size: 12px;
+  color: #555;
+  position: relative;
+  z-index: 2;
+  padding: 5px;
+  padding-top: 20px;
+}
+#legendCensus i {
+  width: 50px;
+  height: 18px;
+  float: left;
+  margin-right: 8px;
+  opacity: 0.7;
+}
+.buttonRow1Census {
+  margin:4px 2px 2px 17px;
+}
+.buttonRow2Census {
+  margin:4px 2px 2px 37px;
+}
+#legendCrashes {
+  color: #555;
+  font-size: 12px;
+  position: relative;
+  z-index: 2;
+  padding: 5px;
+  padding-top: 50px;
+  padding-left: 10px;
+}
+.buttonRow1Crashes {
+  margin:4px 2px 2px 67px;
+}
+.buttonRow2Crashes {
+  margin:4px 2px 2px 80px;
+}
+#buttonRowSeverity {
+  font-size:12px;
+  margin-left:54px;
+  width:200px;
+  height:10px;
+  margin-top:6px;
+}
+#buttonRowSeverityLabels {
+  font-size:12px;
+  margin-top:7px;
+  width:300px;
+  height:10px;
+  font-size:11px;
+}
+#sevLab0 { width:40px; display: inline-block; float:left; font-weight:bold; }
+#sevLab1 { width:35px; display: inline-block; float:left; }
+#sevLab2 { width:54px; display: inline-block; float:left; }
+#sevLab3 { width:46px; display: inline-block; float:left; }
+#sevLab4 { width:54px; display: inline-block; float:left; }
+#sevLab5 { width:45px; display: inline-block; float:left; }
+#heatButton {
+  padding:4px;
+}
+#markerButton {
+  padding:4px;
+}
+#commButton {
+  padding:4px;
+}
+.choiceTitle {
+  font-size:17px;
+  font-weight: bold;
+  clear: left;
+  margin-bottom:2px;
+}
+.choiceSubTitle {
+  font-size:16px;
+  font-weight: normal;
+  font-style: italic;
+  clear: left;
+  margin-bottom:14px;
+  margin-left:10px;
+}
+#labelCrashes {
+  line-height: 18px;
+  color: #333;
+  z-index: 2;
+  width:80%;
+  font-size: 13px;
+  padding: 7px;
+  margin-top:7px;
+  font-weight:bold;
+  background-color:lightgrey;
+  display:none;
+}
+#countCrashes {
+  font-weight:normal;
+}
+#labelCensus {
+  line-height: 18px;
+  color: #333;
+  width:80%;
+  z-index: 2;
+  font-size: 13px;
+  padding: 7px;
+  margin-top:7px;
+  font-weight:bold;
+  background-color:lightgrey;
+  display:none;
+}
+#sourceCrashes {
+  line-height: 13px;
+  color: #333;
+  z-index: 2;
+  font-size: 11px;
+  font-style: italic;
+  background-color: white;
+  padding: 4px;
+  display:none;
+}
+#sourceCensus {
+  line-height: 13px;
+  color: #333;
+  z-index: 2;
+  font-size: 11px;
+  font-style: italic;
+  background-color: white;
+  padding: 4px;
+  display:none;
+}
+.dot1 {
+  height: 12px;
+  width: 12px;
+  background-color: #800080; 
+  border-color: "#000";
+  border-radius: 50%;
+  display: inline-block;
+  opacity: 1;
+}
+.dot2 {
+  height: 12px;
+  width: 12px;
+  background-color: #b7410e; 
+  border-color: "#000";
+  border-radius: 50%;
+  display: inline-block;
+  opacity: 1;
+}
+.standardButton {
+	box-shadow:inset 0px 1px 0px 0px #54a3f7;
+	background:linear-gradient(to bottom, #007dc1 5%, #0061a7 100%);
+	background-color:#007dc1;
+	border-radius:3px;
+	border:2px solid #124d77;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-size:13px;
+	padding:6px 14px;
+	text-decoration:none;
+  text-shadow:0px 1px 0px #154682;
+  margin-left:2px;
+}
+.standardButton:hover {
+	background:linear-gradient(to bottom, #0061a7 5%, #007dc1 100%);
+	background-color:#0061a7;
+}
+.standardButton:active {
+	position:relative;
+	top:1px;
+}
+
+.noUi-connect {
+  background: #0061a7 !important;
+}
+.noUi-pips {
+  color: #000 !important;
+  font-size: 11px;
+}
+
+.noUi-pips-horizontal {
+  height:14px !important;
+  padding:2px 0 !important;
+}
+
+.noUi-horizontal .noUi-handle {
+  width: 26px !important;
+  height: 23px !important;
+  right: -13px !important;
+}
+
+.noUi-handle:before, .noUi-handle:after {
+  left: 11px !important;
+}
+
+.noUi-handle:after {
+  left: 11px !important;
+}
+
+.noUi-marker-horizontal.noUi-marker-large {
+  height: 6px !important;
+}
+.leaflet-popup-content {
+  width:175px; 
+}
+.leaflet-popup-content ul {
+  list-style: none;
+  background-color: #ddd;
+  border-top: 1px solid #000;
+}
+ .leaflet-popup-content li {
+  padding: 4px !important;
+  border-bottom: 1px solid #000;
+}
+.leaflet-popup-content .listlabel {
+  font-weight:bold;
+}
+.leaflet-popup-content .areacount {
+  font-style:italic;
+}
+.leaflet-popup-content .popuptitle {
+  font-weight:bold;
+  text-decoration: underline;
+}
+.leaflet-heatmap-layer {
+  opacity: .7;
+}
+ /*
+STATS AND CALLS TO ACTION
+*/
+.subcontainer {
+  margin-top:20px;
+  background-color:#ddd;
+  height: 100%;
+  padding:6px 12px 10px 12px;
+  border: 1px solid #000;
+  border-radius: 20px;
+  display: block;
+  overflow: auto;
+}
+.submainTitle {
+  position: relative;
+  height: 28px;
+  width: 1054px;
+  clear:both;
+  margin:5px 5px 5px 30px;
+  font-size:18px;
+  font-weight:bold;
+  color: #000;
+}
+.linkList {
+  position: relative;
+  margin:5px 5px 5px 30px;
+  font-size:14px;
+  font-weight:normal;
+  color: #000;
+  overflow: hidden;
+  list-style-type: none;
+}
+.linkList li {
+    float: left; 
+    margin-left:20px;
+}
+#statPanel {
+  display:none; 
+}
+#statContain {
+  width:100%; 
+  padding-left: 60px;
+}
+.statSubcontain {
+  width:22%; 
+  float:left; 
+  padding: 5px; 
+  font-size: 13px;
+  font-weight:bold;
+}
+.statList {
+  position: relative;
+  margin:5px 5px 5px 30px;
+  font-size:13px;
+  font-weight:normal;
+  color: #000;
+  overflow: hidden;
+  list-style-type: disc;
+}
+.statList li {
+    float: left; 
+    clear:both;
+    margin-left:20px;
+}
+.projectDescription {
+  position: relative;
+  height: 38px;
+  width: 1054px;
+  clear:both;
+  margin:5px 5px 5px 30px;
+  font-size:12px;
+  font-weight:normal;
+  color: #222;  
+  line-height:12px;
+}
+/*
+TOOLTIPS
+*/
+/* Tooltip container */
+.tooltip {
+  font-size:12px;
+  font-weight: bold;
+  color:#333;
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+/* Tooltip text */
+.tooltip .tooltiptext {
+  font-size:11px;
+  font-weight: normal;
+  visibility: hidden;
+  width: 120px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  padding: 2px;
+  border-radius: 6px;
+  /* Position the tooltip text */
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -60px;
+  /* Fade in tooltip */
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+/* Tooltip arrow */
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+/*
+OVERLAYS
+*/
+.overlay { 
+  width: 100%;
+  position: fixed;
+  z-index: 10;
+  left: 0;
+  top: 0;
+  background-color: #87ceeb;
+  opacity: 0.9;
+  overflow-x: hidden; /* Disable horizontal scroll */
+  transition: 0.5s; /* 0.5 second transition effect to slide in or slide down the overlay (height or width, depending on reveal) */
+}
+#launchOverlay {
+  height: 100%;
+  overflow-x: hidden;
+  transition: 0.5s;
+}
+#infoOverlay {
+  height: 0%;
+  overflow-x: hidden;
+  transition: 0.5s;
+  opacity: 0.0;
+}
+.overlayContent {
+  position: relative;
+  top: 10%;
+  width: 850px;
+  text-align: center;
+  margin: auto;
+  background-color: #FFF;
+  opacity: 1;
+}
+.overlayLink a {
+  padding: 5px;
+  text-decoration: none;
+  font-size: 30px;
+  color: #bb0000;
+  display: block;
+  z-index: 10;
+}
+.overlay a:hover, .overlay a:focus {
+  color: #002654;
+}
+.overlay .closebtn {
+  position: absolute;
+  top: 20px;
+  right: 75px;
+  font-size: 60px;
+  text-decoration:none;
+}
+@media screen and (max-height: 450px) {
+  .overlayLink a {font-size: 20px}
+  .overlay .closebtn {
+    font-size: 40px;
+    top: 15px;
+    right: 35px;
+  }
+}
+.overlayTitle {
+  position: relative;
+  clear:both;
+  margin:5px 10px 5px 10px;
+  padding:5px;
+  font-size:22px;
+  font-weight:bold;
+  color: #000;
+}
+.overlayLink {
+  clear:both;
+}
+.overlayDescription {
+  position: relative;
+  clear:both;
+  margin:5px 10px 5px 10px;
+  padding:5px;
+  font-size:16px;
+  font-weight:normal;
+  color: #222;  
+}
+.overlayMakerNotes {
+  position: relative;
+  float:left;
+  margin:5px 10px 5px 10px;
+  padding:5px;
+  font-size:14px;
+  font-weight:normal;
+  color: #222;  
+  width:30%;
+  text-align:left;
+}
+.overlayDataNotes {
+  position: relative;
+  float:left;
+  margin:5px 10px 5px 10px;
+  padding:5px;
+  font-size:14px;
+  font-weight:normal;
+  color: #222; 
+  width:50%; 
+  text-align:left;
+}
+.overlayMakerNotes li {
+  padding: 5px;
+  margin-left: 35px;
+}
+.overlayDataNotes li {
+  padding: 5px;
+  margin-left: 35px;
+}
