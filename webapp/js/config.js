@@ -4,7 +4,7 @@
 var localeShortName = "CBUS"
 var localeLongName = "Columbus Ohio"
 //Census API Key 
-var censusAccessToken = 'ab863b6fc96a6443ccc41bd1dfda2694ace723ff';
+var censusAccessToken = 'YOUR_TOKEN_HERE';
 var censusAcsYear = "2018"
 //Display tabular data (requires running python script to generate)
 //Set where to center the map - Default is Columbus, Ohio
