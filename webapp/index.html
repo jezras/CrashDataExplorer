@@ -23,17 +23,15 @@
     <a href="javascript:void(0)" class="closebtn" onclick="closeStartOverlay()">&times;</a>
     <div class="overlayContent">
       <div class="overlayTitle">
-        The <span id="overlayTitleName" style="color:#CE1126">CBUS</span> Pedestrian and Cyclist Traffic Crash Data
-        Explorer for Vision Zero
+        The <span id="overlayTitleName" style="color:#CE1126">Columbus Ohio</span> Pedestrian and Cyclist Traffic Crash
+        Data Explorer for Vision Zero
       </div>
-      <div class="overlayDescription">
-        Pedestrians and cyclists are the most vulnerable road users. The motor vehicle crashes that put them at risk are
-        not accidental, but are related to weaknesses in our transportation system, including street design, road speed,
-        and enforcement.
-        Use this interactive map to explore the pattern of pedestrian and cyclist-involved crashes in Columbus Ohio and
-        its connection to underlying demographics to see who is most at risk. Click on markers where crashes occurred
-        for details and Street Views to consider the role of the built environment.
-      </div>
+      <div id="overlayDescription1">Pedestrians and cyclists are the most vulnerable road users. The motor vehicle
+        crashes that put them at risk are not accidental, but are related to weaknesses in our transportation system,
+        including street design, road speed, and enforcement. Use this interactive map to explore the pattern of
+        pedestrian and cyclist-involved crashes in our area and its connection to communities and underlying
+        demographics to see who is most at risk. Click on markers where crashes occurred for details and street views to
+        consider the role of the built environment.</div>
       <div class="overlayLink">
         <a href="#" onclick="closeStartOverlay()">START EXPLORING THE MAP >></a>
       </div>
@@ -44,34 +42,22 @@
     <a href="javascript:void(0)" class="closebtn" onclick="closeInfoOverlay()">&times;</a>
     <div class="overlayContent">
       <div class="overlayTitle">
-        The <span id="aboutTitleName" style="color:#CE1126">CBUS</span> Pedestrian and Cyclist Traffic Crash Data
-        Explorer
+        The <span id="aboutTitleName" style="color:#CE1126">Columbus Ohio</span> Pedestrian and Cyclist Traffic Crash
+        Data Explorer
       </div>
-      <div class="overlayDescription">
-        Pedestrians and cyclists are the most vulnerable road users. The motor vehicle crashes that put them at risk are
-        not accidental, but are related to weaknesses in our transportation system, including street design, road speed,
-        and enforcement.
-        Use this interactive map to explore the pattern of pedestrian and cyclist-involved crashes in Columbus Ohio and
-        its connection to underlying demographics to see who is most at risk. Click on markers where crashes occurred
-        for details and Street Views to consider the role of the built environment.
-      </div>
+      <div id="overlayDescription2">Pedestrians and cyclists are the most vulnerable road users. The motor vehicle
+        crashes that put them at risk are not accidental, but are related to weaknesses in our transportation system,
+        including street design, road speed, and enforcement. Use this interactive map to explore the pattern of
+        pedestrian and cyclist-involved crashes in our area and its connection to communities and underlying
+        demographics to see who is most at risk. Click on markers where crashes occurred for details and street views to
+        consider the role of the built environment.</div>
       <div class="overlayDataNotes">
         <strong>Data Sources and Notes:</strong>
-        <ul>
-          <li>Crash data is from the Ohio Department of Transportation and is downloaded through the <a
-              href="https://www.smartcolumbusos.com/">Smart Columbus Operating System</a></li>
-          <li>Demographic data is from the American Community Survey and is accessed through APIs provided by the <a
-              href="https://www.census.gov/developers/">US Census</a></li>
-          <li>Google Street Views may not reflect street design at the time of crashes</li>
-        </ul>
+        <div id="sourceNotesList"></div>
       </div>
       <div class="overlayMakerNotes">
         <strong>Development Notes:</strong>
-        <ul>
-          <li><a href="https://leafletjs.com/">Leaflet</a> map application created by <a
-              href="https://www.jonathanstiles.net/about/">Jonathan Stiles</a></li>
-          <li>Githup repository coming soon</li>
-        </ul>
+        <div id="devNotesList"></div>
       </div>
       <div class="overlayLink">
         <a href="#" onclick="closeInfoOverlay()">RETURN TO THE MAP >></a>
@@ -84,7 +70,8 @@
     <div class="container">
       <div class="containerTitle">
         <div class="mainTitle">
-          <span id="mainTitleName" style="color:#CE1126">CBUS</span> Pedestrian and Cyclist Traffic Crash Data Explorer
+          <span id="mainTitleName" style="color:#CE1126">Columbus Ohio</span> Pedestrian and Cyclist Traffic Crash Data
+          Explorer
         </div>
         <div class="navRight">
           <a href="#" onclick="openInfoOverlay()">About</a>
@@ -108,7 +95,7 @@
           </div>
           <div class="blockTrans">
             <div class="titleTrans">
-              <div class="choiceTitle"><span style="color:#CE1126">Choose</span> pedestrian or cyclist crashes</div>
+              <div class="choiceTitle"><span style="color:#CE1126">Explore</span> pedestrian or cyclist crashes</div>
             </div>
             <div class="legendNavTrans">
               <div class="legendTrans">
@@ -132,10 +119,14 @@
                   <div id="sevLab2">Serious</div>
                   <div id="sevLab1">Fatal</div>
                 </div>
+              </div>
+              <div class="labelCrashes">
                 <div id="labelCrashes"><span id="titleCrashes"></span><span id="countCrashes"></span></div>
-                <div id="sourceCrashes">Source: ODOT Crash Data for Franklin County</div>
               </div>
             </div>
+          </div>
+          <div class="blockChart">
+            <canvas id="line-chart" width="422px" height=120px></canvas>
           </div>
           <div class="blockCommunity">
             <div class="titleCommunity">
@@ -184,7 +175,6 @@
                     class="standardButton">Children</a>
                 </div>
                 <div id="labelCensus"></div>
-                <div id="sourceCensus">Source: US Census 2017 ACS 5 Year Estimates</div>
               </div>
             </div>
           </div>
@@ -195,26 +185,19 @@
     <div class="subcontainer" id="statPanel">
       <div style="width:100%;">
         <span class="submainTitle"><span style="color:#CE1126">Stats</span> about community traffic safety in
-          Columbus:</span>
+          <span id="statsPanelName">Columbus, Ohio</span>:</span>
       </div>
       <div id="statContain"></div>
     </div>
 
-    <div class="subcontainer">
+    <div class="subcontainer" id="advocatePanel">
       <span class="submainTitle"><span style="color:#CE1126">Learn</span> about ways you can advocate for safer
         streets:</span>
-      <ul class="linkList">
-        <li><a
-            href="https://smartgrowthamerica.org/program/national-complete-streets-coalition/publications/what-are-complete-streets/">Complete
-            Streets (Smart Growth America)</a></li>
-        <li><a href="https://www.columbus.gov/publicservice/traffic-management/Complete-Streets/">Complete Streets
-            (City
-            of Columbus)</a></li>
-        <li><a href="http://www.morpc.org/tool-resource/complete-streets/">Complete Streets (MORPC)</a></li>
-        <li><a href="https://visionzeronetwork.org/">Vision Zero Network</a></li>
-      </ul>
+      <div id="linkList"></div>
     </div>
   </div>
+
+
 
   <!---LOAD REQUIRED LIBRARIES-->
   <script src="./js/ext/leaflet.js"></script>
@@ -222,6 +205,7 @@
   <script src="./js/ext/turf.min.js"></script>
   <script src="./js/ext/citysdk.js"></script>
   <script src="./js/ext/nouislider.js"></script>
+  <script src="./js/ext/Chart.min.js"></script>
   <!---LOAD REQUIRED DATA-->
   <script src="./data/cde_ped_data.js"></script>
   <script src="./data/cde_bike_data.js"></script>

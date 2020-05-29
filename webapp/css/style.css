@@ -30,7 +30,7 @@ OUTER FRAMING AND NAV
 }
 .main {
   width:1078px;
-  padding:5px 5px 5px 5px;
+  padding:6px 5px 5px 5px;
   margin:auto;
 }
 .mainTitle {
@@ -38,10 +38,10 @@ OUTER FRAMING AND NAV
   height: 25px;
   width: 900px;
   float:left;
-  font-size:22px;
+  font-size:20px;
   font-weight:bold;
   color: #000;
-  padding-bottom:5px;
+  padding-bottom:4px;
 }
 .navRight {
   position: relative;
@@ -70,12 +70,12 @@ LEFT PANEL
 .leftPanel {
   position: relative;
   height: 562px;
-  width: 600px;
+  width: 630px;
   float: left;
 }
 #map {
   height: 560px;
-  width: 600px;
+  width: 630px;
   z-index: 1;
   float: left;
   border-style: solid;
@@ -101,7 +101,7 @@ RIGHT PANEL
 .rightPanel {
   position: relative;
   height: 560px;
-  width: 452px;
+  width: 422px;
   float: left;
   border-style: solid;
   border-width: 1px 1px 1px 1px;
@@ -109,22 +109,22 @@ RIGHT PANEL
 }
 .blockTime {
   display:block;
-  width: 442px;
-  height:70px;
+  width: 412px;
+  height:60px;
   padding: 2px 2px 2px 8px;
   border-bottom: 1px solid #333;
 }
 .titleTime {
-  height: 30px;
-  width: 446px;
+  height: 26px;
+  width: 412px;
 }
 .legendNavTime {
-  height: 38px;
-  width: 446px;
+  height: 32px;
+  width: 412px;
 }
 .navigationTime {
   height: 38px;
-  width: 446px;
+  width: 412px;
 }
 #buttonRowYear {
   font-size:12px;
@@ -134,86 +134,97 @@ RIGHT PANEL
 }
 .blockTrans {
   display:block;
-  width: 442px;
-  height:198px;
+  width: 412px;
+  height:152px;
   padding: 2px 2px 2px 8px;
-  border-bottom: 1px solid #333;
 }
 .titleTrans {
-  height: 30px;
-  width: 446px;
+  height: 22px;
+  width: 412px;
 }
 .legendNavTrans {
-  height: 168px;
-  width: 446px;
+  height: 92px;
+  width: 412px;
 }
 .navigationTrans {
-  height: 168px;
-  width: 310px;
+  height: 92px;
+  width: 280px;
   float:left;
 }
 .legendTrans {
-  height: 168px;
-  width: 134px;
+  height: 92px;
+  width: 130px;
   float:left;
+}
+.labelCrashes {
+  float:left;
+  height:38px;
+  width: 400px;
+  display: block;
 }
 .blockClick {
   display:block;
-  height: 38px;
-  width: 442px;
+  height: 28px;
+  width: 412px;
   padding: 2px 2px 2px 8px;
   border-bottom: 1px solid #333;
 }
 .titleClick {
-  height: 34px;
-  width: 446px;
+  height: 26px;
+  width: 412px;
 }
 .blockDemo {
   display:block;
-  width: 442px;
-  height:172px;
+  width: 412px;
+  height:134px;
   padding: 2px 2px 2px 8px;
+  border-bottom: 1px solid #333;
 }
 .titleDemo {
-  height: 30px;
-  width: 446px;
+  height: 22px;
+  width: 412px;
 }
 .legendNavDemo {
-  height: 145px;
-  width: 446px;
+  height: 112px;
+  width: 412px;
 }
 .navigationDemo {
-  height: 145px;
-  width: 310px;
+  height: 112px;
+  width: 280px;
   float: left;
 }
 .legendDemo {
-  height: 145px;
-  width: 134px;
+  height: 112px;
+  width: 124px;
   float: left;
 }
 .blockCommunity {
   display:block;
-  height: 56px;
-  width: 442px;
+  height: 42px;
+  width: 412px;
   padding: 2px 2px 2px 8px;
   border-bottom: 1px solid #333;
 }
 .titleCommunity {
-  height: 22px;
-  width: 446px;
+  height: 20px;
+  width: 412px;
 }
 .buttonRowCommunity {
-  margin:4px 2px 2px 134px;
-  font-size: 13px !important;
+  margin:0px 2px 2px 134px;
+  font-size: 12px !important;
+}
+.blockChart {
+  width: 422px;
+  height:120px;
+  border-bottom: 1px solid #000;
 }
 .legendNavTime {
   height: 30px;
-  width: 446px;
+  width: 412px;
 }
 .navigationTime {
   height: 30px;
-  width: 446px;
+  width: 412px;
 }
 #legendCensus {
   line-height: 16px;
@@ -222,7 +233,7 @@ RIGHT PANEL
   position: relative;
   z-index: 2;
   padding: 5px;
-  padding-top: 20px;
+  padding-top: 2px;
 }
 #legendCensus i {
   width: 50px;
@@ -232,10 +243,10 @@ RIGHT PANEL
   opacity: 0.7;
 }
 .buttonRow1Census {
-  margin:4px 2px 2px 17px;
+  margin:0px 2px 2px 17px;
 }
 .buttonRow2Census {
-  margin:4px 2px 2px 37px;
+  margin:0px 2px 2px 37px;
 }
 #legendCrashes {
   color: #555;
@@ -247,10 +258,10 @@ RIGHT PANEL
   padding-left: 10px;
 }
 .buttonRow1Crashes {
-  margin:4px 2px 2px 67px;
+  margin:0px 2px 2px 67px;
 }
 .buttonRow2Crashes {
-  margin:4px 2px 2px 80px;
+  margin:0px 2px 2px 80px;
 }
 #buttonRowSeverity {
   font-size:12px;
@@ -282,13 +293,13 @@ RIGHT PANEL
   padding:4px;
 }
 .choiceTitle {
-  font-size:17px;
+  font-size:15px;
   font-weight: bold;
   clear: left;
   margin-bottom:2px;
 }
 .choiceSubTitle {
-  font-size:16px;
+  font-size:14px;
   font-weight: normal;
   font-style: italic;
   clear: left;
@@ -296,13 +307,15 @@ RIGHT PANEL
   margin-left:10px;
 }
 #labelCrashes {
+  height: 36px;
   line-height: 18px;
   color: #333;
   z-index: 2;
   width:80%;
-  font-size: 13px;
-  padding: 7px;
-  margin-top:7px;
+  font-size: 12px;
+  padding: 1px 4px 1px 4px ;
+  margin-top:0px;
+  margin-left:44px;
   font-weight:bold;
   background-color:lightgrey;
   display:none;
@@ -315,31 +328,12 @@ RIGHT PANEL
   color: #333;
   width:80%;
   z-index: 2;
-  font-size: 13px;
-  padding: 7px;
-  margin-top:7px;
+  font-size: 12px;
+  padding: 1px 4px 1px 4px ;
+  margin-top:5px;
+  margin-left:25px;
   font-weight:bold;
   background-color:lightgrey;
-  display:none;
-}
-#sourceCrashes {
-  line-height: 13px;
-  color: #333;
-  z-index: 2;
-  font-size: 11px;
-  font-style: italic;
-  background-color: white;
-  padding: 4px;
-  display:none;
-}
-#sourceCensus {
-  line-height: 13px;
-  color: #333;
-  z-index: 2;
-  font-size: 11px;
-  font-style: italic;
-  background-color: white;
-  padding: 4px;
   display:none;
 }
 .dot1 {
@@ -369,8 +363,8 @@ RIGHT PANEL
 	display:inline-block;
 	cursor:pointer;
 	color:#ffffff;
-	font-size:13px;
-	padding:6px 14px;
+	font-size:12px;
+	padding:4px 11px;
 	text-decoration:none;
   text-shadow:0px 1px 0px #154682;
   margin-left:2px;
@@ -382,37 +376,6 @@ RIGHT PANEL
 .standardButton:active {
 	position:relative;
 	top:1px;
-}
-
-.noUi-connect {
-  background: #0061a7 !important;
-}
-.noUi-pips {
-  color: #000 !important;
-  font-size: 11px;
-}
-
-.noUi-pips-horizontal {
-  height:14px !important;
-  padding:2px 0 !important;
-}
-
-.noUi-horizontal .noUi-handle {
-  width: 26px !important;
-  height: 23px !important;
-  right: -13px !important;
-}
-
-.noUi-handle:before, .noUi-handle:after {
-  left: 11px !important;
-}
-
-.noUi-handle:after {
-  left: 11px !important;
-}
-
-.noUi-marker-horizontal.noUi-marker-large {
-  height: 6px !important;
 }
 .leaflet-popup-content {
   width:175px; 
@@ -439,11 +402,40 @@ RIGHT PANEL
 .leaflet-heatmap-layer {
   opacity: .7;
 }
+/*
+SLIDERS
+*/
+.noUi-connect {
+  background: #0061a7 !important;
+}
+.noUi-pips {
+  color: #000 !important;
+  font-size: 11px;
+}
+.noUi-pips-horizontal {
+  height:12px !important;
+  padding:1px 0 !important;
+}
+
+.noUi-horizontal .noUi-handle {
+  width: 26px !important;
+  height: 21px !important;
+  right: -13px !important;
+}
+.noUi-handle:before, .noUi-handle:after {
+  left: 11px !important;
+}
+.noUi-handle:after {
+  left: 11px !important;
+}
+.noUi-marker-horizontal.noUi-marker-large {
+  height: 4px !important;
+}
  /*
 STATS AND CALLS TO ACTION
 */
 .subcontainer {
-  margin-top:20px;
+  margin-top:6px;
   background-color:#ddd;
   height: 100%;
   padding:6px 12px 10px 12px;
@@ -462,7 +454,7 @@ STATS AND CALLS TO ACTION
   font-weight:bold;
   color: #000;
 }
-.linkList {
+#linkList ul {
   position: relative;
   margin:5px 5px 5px 30px;
   font-size:14px;
@@ -471,11 +463,14 @@ STATS AND CALLS TO ACTION
   overflow: hidden;
   list-style-type: none;
 }
-.linkList li {
+#linkList li {
     float: left; 
     margin-left:20px;
 }
 #statPanel {
+  display:none; 
+}
+#advocatePanel {
   display:none; 
 }
 #statContain {
@@ -635,7 +630,7 @@ OVERLAYS
 .overlayLink {
   clear:both;
 }
-.overlayDescription {
+#overlayDescription1, #overlayDescription2 {
   position: relative;
   clear:both;
   margin:5px 10px 5px 10px;

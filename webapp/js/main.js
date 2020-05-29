@@ -33,18 +33,25 @@ var point3 = null;
 var poly1 = null;
 var heat1 = null;
 var heat2 = null;
-var pointcoords_ped = []
-var pointcoords_bike = []
-var yearsActive = years
-var severityActive = severity
+var pointcoords_ped = [];
+var pointcoords_ped_heat = [];
+var pointcoords_bike = [];
+var pointcoords_bike_heat = [];
+var countbyyear_ped = [];
+var countbyyear_bike = [];
+var yearsActive = [years[0], years[years.length - 1]];
+var severityActive = [severity[0], severity[severity.length - 1]];;
 var basemap = null;
 var basemapon = false;
 var transon = "none";
 var demoon = 0;
 var hasHeat = 0;
-var checkedHeat = true
-var checkedMarker = true
-var checkedCommunity = true
+var checkedHeat = true;
+var checkedMarker = true;
+var checkedCommunity = true;
+var lineChart = null;
+var currentCrashesTitle = "";
+var currentCrashesCount = "";
 
 //INITIALIZE MAP
 var map = L.map('map', {
@@ -153,12 +160,11 @@ function manageButtonState(which, setto) {
 					map.removeLayer(lastheatmap);
 					lastheatmap = null;
 				}
-				pointcoords_ped = []
-				pointcoords_bike = []
+				pointcoords_ped = []; pointcoords_ped_heat = []; countbyyear_ped = [];
+				pointcoords_bike = []; pointcoords_bike_heat = []; countbyyear_bike = [];
 				transon = 'none'
 				document.getElementById("legendCrashes").innerHTML = "";
 				document.getElementById("labelCrashes").style.display = "none";
-				document.getElementById("sourceCrashes").style.display = "none";
 			}
 		}
 		else if (which == type_census) {
@@ -201,19 +207,16 @@ function manageButtonState(which, setto) {
 				demoon = 0
 				document.getElementById("legendCensus").innerHTML = "";
 				document.getElementById("labelCensus").style.display = "none";
-				document.getElementById("sourceCensus").style.display = "none";
 			}
 		}
 	}
 }
 
 function switchMap(type, num) {
-	//some sort of reset here
 	loadStart();
 	if (type == type_census) {
 		document.getElementById("legendCensus").innerHTML = "";
 		document.getElementById("labelCensus").style.display = "hidden";
-		document.getElementById("sourceCensus").style.display = "hidden";
 		if (num == type_race) { //black
 			doCensusMap(1, centerLat, centerLong, "B01003_001E", "B02001_003E", null, null, null, "Percent of Population Who Identify as Black or African American", 3)
 		}
@@ -232,115 +235,132 @@ function switchMap(type, num) {
 		else if (num == type_hou) { //housing
 			doCensusMap(6, centerLat, centerLong, "B25001_001E", "B25003_003E", null, null, null, "Percent of Renter Occupied Units", 4)
 		}
-		document.getElementById("sourceCrashes").style.display = "block";
 	}
-	if (type == type_crashes) {
-		if (checkedMarker) {
-			document.getElementById("labelCrashes").style.display = "hidden";
-			document.getElementById("sourceCrashes").style.display = "hidden";
-			title = "";
-			legend = "";
-			count = ""
-			if (lastpointmap) {
-				map.removeLayer(lastpointmap);
-				lastpointmap = null;
+	else if (type == type_crashes) {
+		document.getElementById("labelCrashes").style.display = "hidden";
+		title = "";
+		legend = "";
+		countTot = 0
+		countYears = [];
+		if (lastpointmap) {
+			map.removeLayer(lastpointmap);
+			lastpointmap = null;
+		}
+		if (lastheatmap) {
+			map.removeLayer(lastheatmap);
+			lastheatmap = null;
+		}
+		if (num == type_ped) {
+			coords_length = pointcoords_ped.length
+			for (i = 0; i < years.length; i++) {
+				countbyyear_ped.push(0)
 			}
-			if (lastheatmap) {
-				map.removeLayer(lastheatmap);
-				lastheatmap = null;
-			}
-			if (num == type_ped) {
-				title = "Pedestrian-Involved Crashes in Franklin County";
-				legend = '<div class="dot1"></div> Pedestrian Crash';
-				heatCoordinates = pointcoords_ped.length;
-				point1 = L.geoJson(eval(pedgeo), {
-					pointToLayer: function (feature, latlng) {
-						if (compareAgainstSettings(feature)) {
-							return L.circleMarker(latlng, circlePedStyle);
-						}
-					},
-					onEachFeature: function (feature, layer) {
-						if (compareAgainstSettings(feature)) {
-							if (heatCoordinates == 0) { pointcoords_ped.push([feature.geometry.coordinates[1], feature.geometry.coordinates[0], (invertSeverityValues(feature.properties.severity) * 20) / 100]); }
-							layer.bindPopup(
-								'<span class=popuptitle>Crash Detail</span>' +
-								'<ul><li><span class="listlabel">Type</span>: Pedestrian-Involved</li>' +
-								'<li><span class="listlabel">Year</span>: ' + feature.properties.year + '</li>' +
-								'<li><span class="listlabel">Road</span>: ' + new String(feature.properties.road).toUpperCase() + '</li>' +
-								'<li><span class="listlabel">Injury</span>: ' + injuryLabels[parseInt(feature.properties.severity) - 1] + '</li>' +
-								//'<li><span class="listlabel">Speed Limit</span>: ' + getNumber(feature.properties.drv_posted_nbr) + '</li>' +
-								'<li><span class="listlabel">Lighting</span>: ' + lightingconditionLabels[parseInt(feature.properties.lightingcondition) - 1] + '</li>' +
-								'<li><a target="_blank" href="' + getStreetViewURL(feature.geometry.coordinates[1], feature.geometry.coordinates[0]) + '">Launch Street View in New Tab</a></li></ul>'
-							);
-						}
+			currentCrashesTitle = "Pedestrian-Involved Crashes in " + localeTechnicalName;
+			legend = '<div class="dot1"></div> Pedestrian Crash';
+			point1 = L.geoJson(eval(pedgeo), {
+				pointToLayer: function (feature, latlng) {
+					if (compareAgainstSettings(feature)) {
+						return L.circleMarker(latlng, circlePedStyle);
 					}
-				})
-				count = heatCoordinates = pointcoords_ped.length
+				},
+				onEachFeature: function (feature, layer) {
+					if (compareAgainstSettings(feature)) {
+						if (coords_length == 0) {
+							topush = [feature.geometry.coordinates[1], feature.geometry.coordinates[0], (invertSeverityValues(feature.properties.severity) * 20) / 100, feature.properties.year]
+							pointcoords_ped.push(topush);
+							pointcoords_ped_heat.push(topush.slice(0, 3))
+							yeartoindex = feature.properties.year - years[0]
+							countbyyear_ped[yeartoindex]++;
+						}
+						layer.bindPopup(
+							'<span class=popuptitle>Crash Detail</span>' +
+							'<ul><li><span class="listlabel">Type</span>: Pedestrian-Involved</li>' +
+							'<li><span class="listlabel">Year</span>: ' + feature.properties.year + '</li>' +
+							'<li><span class="listlabel">Road</span>: ' + new String(feature.properties.road).toUpperCase() + '</li>' +
+							'<li><span class="listlabel">Injury</span>: ' + injuryLabels[parseInt(feature.properties.severity) - 1] + '</li>' +
+							//'<li><span class="listlabel">Speed Limit</span>: ' + getNumber(feature.properties.drv_posted_nbr) + '</li>' +
+							'<li><span class="listlabel">Lighting</span>: ' + lightingconditionLabels[parseInt(feature.properties.lightingcondition) - 1] + '</li>' +
+							'<li><a target="_blank" href="' + getStreetViewURL(feature.geometry.coordinates[1], feature.geometry.coordinates[0]) + '">Launch Street View in New Tab</a></li></ul>'
+						);
+					}
+				}
+			})
+			countTot = pointcoords_ped.length
+			if (checkedMarker) {
 				point1.addTo(map);
-				lastpointmap = point1
-				if (checkedHeat) {
-					showHeatMap();
-				}
 			}
-			else if (num == type_bike) {
-				title = "Cyclist-Involved Crashes in Franklin County";
-				legend = '<div class="dot2"></div> Cyclist Crash';
-				heatCoordinates = pointcoords_bike.length
-				point2 = L.geoJson(eval(bikegeo), {
-					pointToLayer: function (feature, latlng) {
-						if (compareAgainstSettings(feature)) {
-							return L.circleMarker(latlng, circleBikeStyle);
-						}
-					},
-					onEachFeature: function (feature, layer) {
-						if (compareAgainstSettings(feature)) {
-							if (heatCoordinates == 0) { pointcoords_bike.push([feature.geometry.coordinates[1], feature.geometry.coordinates[0], (invertSeverityValues(feature.properties.severity) * 20) / 100]); }
-							layer.bindPopup(
-								'<span class=popuptitle>Crash Detail</span>' +
-								'<ul><li><span class="listlabel">Type</span>: Cyclist-Involved</li>' +
-								'<li><span class="listlabel">Year</span>: ' + feature.properties.year + '</li>' +
-								'<li><span class="listlabel">Road</span>: ' + new String(feature.properties.road).toUpperCase() + '</li>' +
-								'<li><span class="listlabel">Injury</span>: ' + injuryLabels[parseInt(feature.properties.severity) - 1] + '</li>' +
-								//'<li><span class="listlabel">Speed Limit: ' + getNumber(feature.properties.drv_posted_nbr) + '</li>' +
-								'<li><span class="listlabel">Lighting</span>: ' + lightingconditionLabels[parseInt(feature.properties.lightingcondition) - 1] + '</li>' +
-								'<li><a target="_blank" href="' + getStreetViewURL(feature.geometry.coordinates[1], feature.geometry.coordinates[0]) + '">Launch Street View in New Tab</a></li></ul>'
-							);
-						}
+			lastpointmap = point1
+			if (checkedHeat) {
+				showHeatMap();
+			}
+			doChart(countbyyear_ped, yearsActive, "Pedestrian Crashes")
+		}
+		else if (num == type_bike) {
+			coords_length = pointcoords_bike.length
+			for (i = 0; i < years.length; i++) {
+				countbyyear_bike.push(0)
+			}
+			currentCrashesTitle = "Cyclist-Involved Crashes in " + localeTechnicalName;
+			legend = '<div class="dot2"></div> Cyclist Crash';
+			point2 = L.geoJson(eval(bikegeo), {
+				pointToLayer: function (feature, latlng) {
+					if (compareAgainstSettings(feature)) {
+						return L.circleMarker(latlng, circleBikeStyle);
 					}
-				})
-				count = heatCoordinates = pointcoords_bike.length
-				point2.addTo(map);
-				lastpointmap = point2
-				if (checkedHeat) {
-					showHeatMap();
+				},
+				onEachFeature: function (feature, layer) {
+					if (compareAgainstSettings(feature)) {
+						if (coords_length == 0) {
+							topush = [feature.geometry.coordinates[1], feature.geometry.coordinates[0], (invertSeverityValues(feature.properties.severity) * 20) / 100, feature.properties.year]
+							pointcoords_bike.push(topush);
+							pointcoords_bike_heat.push(topush.slice(0, 3))
+							yeartoindex = feature.properties.year - years[0]
+							countbyyear_bike[yeartoindex]++;
+						}
+						layer.bindPopup(
+							'<span class=popuptitle>Crash Detail</span>' +
+							'<ul><li><span class="listlabel">Type</span>: Cyclist-Involved</li>' +
+							'<li><span class="listlabel">Year</span>: ' + feature.properties.year + '</li>' +
+							'<li><span class="listlabel">Road</span>: ' + new String(feature.properties.road).toUpperCase() + '</li>' +
+							'<li><span class="listlabel">Injury</span>: ' + injuryLabels[parseInt(feature.properties.severity) - 1] + '</li>' +
+							//'<li><span class="listlabel">Speed Limit: ' + getNumber(feature.properties.drv_posted_nbr) + '</li>' +
+							'<li><span class="listlabel">Lighting</span>: ' + lightingconditionLabels[parseInt(feature.properties.lightingcondition) - 1] + '</li>' +
+							'<li><a target="_blank" href="' + getStreetViewURL(feature.geometry.coordinates[1], feature.geometry.coordinates[0]) + '">Launch Street View in New Tab</a></li></ul>'
+						);
+					}
 				}
+			})
+			countTot = pointcoords_bike.length
+			if (checkedMarker) {
+				point2.addTo(map);
 			}
-			document.getElementById("titleCrashes").innerHTML = title;
-			document.getElementById("countCrashes").innerHTML = " (found " + count + " crashes)";
-			document.getElementById("legendCrashes").innerHTML = legend;
-			document.getElementById("labelCrashes").style.display = "block";
-			document.getElementById("sourceCrashes").style.display = "block";
-
-		}
-		else { //checkedMarker=false
-			if (lastpointmap) {
-				document.getElementById("labelCrashes").style.display = "hidden";
-				document.getElementById("sourceCrashes").style.display = "hidden";
-				title = "";
-				legend = "";
-				map.removeLayer(lastpointmap);
-				lastpointmap = null;
+			lastpointmap = point2
+			if (checkedHeat) {
+				showHeatMap();
 			}
-			showHeatMap();
+			doChart(countbyyear_bike, yearsActive, "Cyclist Crashes")
 		}
+		document.getElementById("titleCrashes").innerHTML = currentCrashesTitle;
+		currentCrashesCount = " (found " + countTot + " crashes matching these settings)";
+		document.getElementById("countCrashes").innerHTML = currentCrashesCount
+		document.getElementById("legendCrashes").innerHTML = legend;
+		document.getElementById("labelCrashes").style.display = "block";
 		loadStop();
 	}
+}
+
+for (i = 0; i < years.length; i++) {
+	countbyyear_ped.push(0)
 }
 
 function countPointsInPolygon(pointcoords, polygon) {
 	var totalcount = pointcoords.length
 	var thiscount = 0
 	var thiscountfs = 0
+	var countbyyear_temp = []
+	for (i = 0; i < years.length; i++) {
+		countbyyear_temp.push(0)
+	}
 	if (lastpointmap || lastheatmap) {
 		for (i = 1; i < pointcoords.length; i++) {
 			var tone = turf.point([pointcoords[i][1], pointcoords[i][0]])
@@ -349,10 +369,12 @@ function countPointsInPolygon(pointcoords, polygon) {
 				if (pointcoords[i][2] >= 0.8) {
 					thiscountfs++
 				}
+				yeartoindex = pointcoords[i][3] - years[0]
+				countbyyear_temp[yeartoindex]++;
 			}
 		}
 	}
-	var returnArray = [thiscount, thiscountfs, totalcount]
+	var returnArray = [thiscount, thiscountfs, totalcount, countbyyear_temp]
 	return returnArray;
 }
 
@@ -393,11 +415,17 @@ function showCommunities() {
 						document.getElementById('ccount' + feature.properties.OBJECTID).innerHTML += "</br>" + Math.round((count[1] / count[0]) * 100) + "% are severe or fatal";
 					}
 					document.getElementById('ccount' + feature.properties.OBJECTID).innerHTML += "</br></br>This community has " + formatPercent(count[0], count[2]) + " of all crashes matching these settings";
+					doChart(count[3], yearsActive, "Pedestrian Crashes")
+					document.getElementById("titleCrashes").innerHTML = "Pedestrian-Involved Crashes in " + feature.properties.AREA_NAME.toUpperCase()
+					document.getElementById("countCrashes").innerHTML = "";
 				}
 				e.propagatedFrom.setStyle(polyCommunityHighlightStyle);
 			});
 			poly1.on('popupclose', function (e) {
 				e.propagatedFrom.setStyle(polyCommunityStyle);
+				doChart(countbyyear_ped, yearsActive, "Pedestrian Crashes");
+				document.getElementById("titleCrashes").innerHTML = currentCrashesTitle;
+				document.getElementById("countCrashes").innerHTML = currentCrashesCount;
 			});
 		}
 		else if (transon == type_bike) {
@@ -410,11 +438,17 @@ function showCommunities() {
 						document.getElementById('ccount' + feature.properties.OBJECTID).innerHTML += "</br>" + Math.round((count[1] / count[0]) * 100) + "% are severe or fatal";
 					}
 					document.getElementById('ccount' + feature.properties.OBJECTID).innerHTML += "</br></br>This community has " + formatPercent(count[0], count[2]) + " of all crashes matching these settings";
+					doChart(count[3], yearsActive, "Cyclist Crashes")
+					document.getElementById("titleCrashes").innerHTML = "Cyclist-Involved Crashes in " + feature.properties.AREA_NAME.toUpperCase()
+					document.getElementById("countCrashes").innerHTML = "";
 				}
 				e.propagatedFrom.setStyle(polyCommunityHighlightStyle);
 			});
 			poly1.on('popupclose', function (e) {
 				e.propagatedFrom.setStyle(polyCommunityStyle);
+				doChart(countbyyear_bike, yearsActive, "Cyclist Crashes")
+				document.getElementById("titleCrashes").innerHTML = currentCrashesTitle;
+				document.getElementById("countCrashes").innerHTML = currentCrashesCount;
 			});
 		}
 		else {
@@ -468,7 +502,7 @@ function showHeatMap() {
 			map.removeLayer(lastheatmap);
 		}
 		if (transon == type_ped) {
-			heat1 = L.heatLayer(pointcoords_ped, {
+			heat1 = L.heatLayer(pointcoords_ped_heat, {
 				minOpacity: 0.03,
 				radius: 20,
 				blur: 15,
@@ -478,7 +512,7 @@ function showHeatMap() {
 			lastheatmap = heat1;
 		}
 		else if (transon == type_bike) {
-			heat2 = L.heatLayer(pointcoords_bike, {
+			heat2 = L.heatLayer(pointcoords_bike_heat, {
 				minOpacity: 0.03,
 				max: 1,
 				radius: 20,
@@ -715,12 +749,13 @@ function doCensusMap(i, lat, long, bas, val, addval1, addval2, addval3, title, s
 
 function checkYears(values, handle, unencoded, tap, positions, noUiSlider) {
 	yearsActive = values
+	map.closePopup();
 	if (transon == type_ped) {
-		pointcoords_ped = []
+		pointcoords_ped = []; pointcoords_ped_heat = []; countbyyear_ped = [];
 		switchMap(type_crashes, type_ped);
 	}
 	else if (transon == type_bike) {
-		pointcoords_bike = []
+		pointcoords_bike = []; pointcoords_bike_heat = []; countbyyear_bike = [];
 		switchMap(type_crashes, type_bike);
 	}
 }
@@ -737,14 +772,75 @@ function invertSeverityValues(x) {
 function checkSeverity(values, handle, unencoded, tap, positions, noUiSlider) {
 	newValues = [invertSeverityValues(values[1]), invertSeverityValues(values[0])]
 	severityActive = newValues
+	map.closePopup();
 	if (transon == type_ped) {
-		pointcoords_ped = []
+		pointcoords_ped = []; pointcoords_ped_heat = []; countbyyear_ped = [];
 		switchMap(type_crashes, type_ped);
 	}
 	else if (transon == type_bike) {
-		pointcoords_bike = []
+		pointcoords_bike = []; pointcoords_bike_heat = []; countbyyear_bike = [];
 		switchMap(type_crashes, type_bike);
 	}
+}
+
+//CREATE CHARTS
+function doChart(countsByYear, whichYears, label) {
+	if (lineChart) {
+		lineChart.destroy();
+	}
+	yearsToDisplay = []
+	countsToDisplay = []
+	for (i = 0; i < years.length; i++) {
+		if (years[i] >= whichYears[0] & years[i] <= whichYears[1]) {
+			yearsToDisplay.push(years[i])
+			countsToDisplay.push(countsByYear[i])
+		}
+	}
+	lineChart = new Chart(document.getElementById("line-chart"), {
+		type: 'line',
+		data: {
+			labels: yearsToDisplay,
+			datasets: [{
+				data: countsToDisplay,
+				label: label,
+				borderColor: "#3e95cd",
+				fill: false,
+				legend: {
+					position: "left",
+				}
+			},
+			]
+		},
+		options: {
+			maintainaspectratio: false,
+			responsive: false,
+			title: {
+				display: false,
+				text: 'Traffic Crash Trend (Current Settings)'
+			},
+			legend: {
+				display: false
+			},
+			scales: {
+				yAxes: [{
+					display: true,
+					ticks: {
+						maxTicksLimit: 4,
+						fontSize: 10,
+						fontColor: 'black',
+						//	suggestedMin: 0,
+					}
+				}],
+				xAxes: [{
+					display: true,
+					ticks: {
+						fontSize: 10,
+						fontColor: 'black',
+					}
+				}]
+			}
+		}
+	});
 }
 
 //ASSIGN EVENTS
@@ -760,14 +856,15 @@ document.getElementById('heatButton').addEventListener("click", function () { ch
 document.getElementById('markerButton').addEventListener("click", function () { checkMarkers() })
 document.getElementById('commButton').addEventListener("click", function () { checkCommunity() })
 
-
 //INIT THE INTERFACE
 function setTitles() {
 	document.title = localeLongName + " Crash Data Explorer for Vision Zero"
-	document.getElementById('mainTitleName').innerHTML = localeShortName;
-	document.getElementById('overlayTitleName').innerHTML = localeShortName;
-	document.getElementById('aboutTitleName').innerHTML = localeShortName;
-
+	document.getElementById('mainTitleName').innerHTML = localeLongName;
+	document.getElementById('overlayTitleName').innerHTML = localeLongName;
+	document.getElementById('aboutTitleName').innerHTML = localeLongName;
+	document.getElementById('statsPanelName').innerHTML = localeLongName;
+	document.getElementById('overlayDescription1').innerHTML = aboutDescription;
+	document.getElementById('overlayDescription2').innerHTML = aboutDescription;
 }
 
 function setSliders() {
@@ -825,14 +922,50 @@ function setStats() {
 	document.getElementById('statPanel').style.display = "block"
 }
 
+function setAdvocacy() {
+	var linkstring = "<ul>";
+	for (i = 0; i < advocacyLinks.length; i++) {
+		linkstring += "<li>";
+		linkstring += advocacyLinks[i];
+		linkstring += "</li>";
+	}
+	linkstring += "</ul>";
+	document.getElementById('linkList').innerHTML = linkstring;
+	document.getElementById('advocatePanel').style.display = 'block';
+}
 
-showBasemap();
+function setSourceNotes() {
+	var linkstring = "<ul>";
+	for (i = 0; i < sourcesNotes.length; i++) {
+		linkstring += "<li>";
+		linkstring += sourcesNotes[i];
+		linkstring += "</li>";
+	}
+	linkstring += "</ul>";
+	document.getElementById('sourceNotesList').innerHTML = linkstring;
+}
+
+function setDevNotes() {
+	var linkstring = "<ul>";
+	for (i = 0; i < devNotes.length; i++) {
+		linkstring += "<li>";
+		linkstring += devNotes[i];
+		linkstring += "</li>";
+	}
+	linkstring += "</ul>";
+	document.getElementById('devNotesList').innerHTML = linkstring;
+}
+
+
+//INIT
 setTitles();
+showBasemap();
 if (showStats) {
 	setStats();
 }
+if (showAdvocacy) {
+	setAdvocacy();
+}
+setSourceNotes();
+setDevNotes();
 setSliders();
-
-
-
-//api.census.gov/data/2018/pep/components?get=DENSITY&in=state:39&for=tract:*&key=ab863b6fc96a6443ccc41bd1dfda2694ace723ff

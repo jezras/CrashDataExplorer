@@ -2,7 +2,7 @@ var CityStats = {
     timeframe: "2015-2019",
     lists: [
         {
-            title: "WALKING: Most Impacted Communities by # of Crashes",
+            title: "WALKING: Most Affected Communities by # of Crashes",
             items: [
                 {
                     name: "Greater Hilltop",
@@ -27,7 +27,7 @@ var CityStats = {
             ]
         },
         {
-            title: "WALKING: Most Impacted Roads by # of Crashes",
+            title: "WALKING: Most Affected Roadways by # of Crashes",
             items: [
                 {
                     name: "High St",
@@ -52,7 +52,7 @@ var CityStats = {
             ]
         },
         {
-            title: "BIKING: Most Impacted Communities by # of Crashes",
+            title: "BIKING: Most Affected Communities by # of Crashes",
             items: [
                 {
                     name: "University District",
@@ -77,7 +77,7 @@ var CityStats = {
             ]
         },
         {
-            title: "BIKING: Most Impacted Roadways by # of Crashes",
+            title: "BIKING: Most Affected Roadways by # of Crashes",
             items: [
                 {
                     name: "High St",
