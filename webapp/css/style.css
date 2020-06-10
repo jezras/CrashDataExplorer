@@ -53,6 +53,14 @@ OUTER FRAMING AND NAV
   text-align:right;
   color: #000;
 }
+.navRight span {
+  cursor: pointer;
+  color:#bb0000;
+  text-decoration:underline;
+}
+.navRight hover {
+  color: #002654;
+}
 .containerTitle {
   position: relative;
   width: 1054px;
@@ -592,26 +600,36 @@ OVERLAYS
   background-color: #FFF;
   opacity: 1;
 }
-.overlayLink a {
+.overlayLink span {
   padding: 5px;
   text-decoration: none;
   font-size: 30px;
   color: #bb0000;
   display: block;
   z-index: 10;
+  cursor:pointer;
 }
-.overlay a:hover, .overlay a:focus {
+.overlay span:hover, .overlay span:focus {
   color: #002654;
 }
 .overlay .closebtn {
   position: absolute;
   top: 20px;
   right: 75px;
-  font-size: 60px;
+  font-size: 50px;
+  width:32px;
+  height:32px;
   text-decoration:none;
+  color: #bb0000;
+  cursor: pointer;
+  text-align:center;
+  line-height:24px;
+  border-radius: 50%;
+  background: #fff;
+  border:solid 1px #bb0000;
 }
 @media screen and (max-height: 450px) {
-  .overlayLink a {font-size: 20px}
+  .overlayLink span {font-size: 20px}
   .overlay .closebtn {
     font-size: 40px;
     top: 15px;
@@ -647,7 +665,7 @@ OVERLAYS
   font-size:14px;
   font-weight:normal;
   color: #222;  
-  width:30%;
+  width:45%;
   text-align:left;
 }
 .overlayDataNotes {
@@ -658,7 +676,7 @@ OVERLAYS
   font-size:14px;
   font-weight:normal;
   color: #222; 
-  width:50%; 
+  width:45%; 
   text-align:left;
 }
 .overlayMakerNotes li {

@@ -13,33 +13,35 @@
   <!--[if lte IE 8]>
     <link rel="stylesheet" href="node_modules/leaflet/dist/leaflet.ie.css" />
   <![endif]-->
-  <link rel="stylesheet" href="./css/style.css?12">
+  <link rel="stylesheet" href="./css/style.css?1005">
 
 </head>
 
 <body>
 
   <div id="launchOverlay" class="overlay">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeStartOverlay()">&times;</a>
+    <span class="closebtn" id="closeStartOverlayLink1">&times;</span>
     <div class="overlayContent">
       <div class="overlayTitle">
-        The <span id="overlayTitleName" style="color:#CE1126">Columbus Ohio</span> Pedestrian and Cyclist Traffic Crash
-        Data Explorer for Vision Zero
+        The <span id="overlayTitleName" style="color:#CE1126">Columbus Ohio</span> Pedestrian and Cyclist Traffic
+        Crash
+        Data Explorer
       </div>
       <div id="overlayDescription1">Pedestrians and cyclists are the most vulnerable road users. The motor vehicle
         crashes that put them at risk are not accidental, but are related to weaknesses in our transportation system,
         including street design, road speed, and enforcement. Use this interactive map to explore the pattern of
         pedestrian and cyclist-involved crashes in our area and its connection to communities and underlying
-        demographics to see who is most at risk. Click on markers where crashes occurred for details and street views to
+        demographics to see who is most at risk. Click on markers where crashes occurred for details and street views
+        to
         consider the role of the built environment.</div>
       <div class="overlayLink">
-        <a href="#" onclick="closeStartOverlay()">START EXPLORING THE MAP >></a>
+        <span id="closeStartOverlayLink2">START EXPLORING THE MAP >></span>
       </div>
     </div>
   </div>
 
   <div id="infoOverlay" class="overlay">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeInfoOverlay()">&times;</a>
+    <span class="closebtn" id="closeInfoOverlayLink1">&times;</span>
     <div class="overlayContent">
       <div class="overlayTitle">
         The <span id="aboutTitleName" style="color:#CE1126">Columbus Ohio</span> Pedestrian and Cyclist Traffic Crash
@@ -60,7 +62,7 @@
         <div id="devNotesList"></div>
       </div>
       <div class="overlayLink">
-        <a href="#" onclick="closeInfoOverlay()">RETURN TO THE MAP >></a>
+        <span id="closeInfoOverlayLink2">RETURN TO THE MAP >></span>
       </div>
     </div>
   </div>
@@ -71,10 +73,10 @@
       <div class="containerTitle">
         <div class="mainTitle">
           <span id="mainTitleName" style="color:#CE1126">Columbus Ohio</span> Pedestrian and Cyclist Traffic Crash Data
-          Explorer
+          Explorer for Vision Zero
         </div>
         <div class="navRight">
-          <a href="#" onclick="openInfoOverlay()">About</a>
+          <span id="openInfoOverlayLink">About</span>
         </div>
       </div>
       <div class="containerBody">
@@ -103,8 +105,8 @@
               </div>
               <div class="navigationTrans">
                 <div class="buttonRow1Crashes">
-                  <a href="#" id="linkPed" class="standardButton">Pedestrian</a> <a href="#" id="linkBike"
-                    class="standardButton">Cyclist</a>
+                  <span id="linkPed" class="standardButton">Pedestrian</span> <span id="linkBike"
+                    class="standardButton">Cyclist</span>
                 </div>
                 <div class="buttonRow2Crashes">
                   <label><input type="checkbox" id="heatButton" checked> Heat Map</input></label> <label><input
@@ -167,12 +169,13 @@
               </div>
               <div class="navigationDemo">
                 <div class="buttonRow1Census">
-                  <a id="linkPov" href="#" class="standardButton">Poverty</a> <a href="#" id="linkHou"
-                    class="standardButton">Housing</a> <a href="#" id="linkMode" class="standardButton">Travel Mode</a>
+                  <span id="linkPov" class="standardButton">Poverty</span> <span id="linkHou"
+                    class="standardButton">Housing</span> <span id="linkMode" class="standardButton">Travel
+                    Mode</span>
                 </div>
-                <div class="buttonRow2Census"> <a href="#" id="linkRace" class="standardButton">Race</a> <a href="#"
-                    id="linkEth" class="standardButton">Ethnicity</a> <a href="#" id="linkChi"
-                    class="standardButton">Children</a>
+                <div class="buttonRow2Census"> <span href="#" id="linkRace" class="standardButton">Race</span> <span
+                    id="linkEth" class="standardButton">Ethnicity</span> <span id="linkChi"
+                    class="standardButton">Children</span>
                 </div>
                 <div id="labelCensus"></div>
               </div>
@@ -207,14 +210,14 @@
   <script src="./js/ext/nouislider.js"></script>
   <script src="./js/ext/Chart.min.js"></script>
   <!---LOAD REQUIRED DATA-->
-  <script src="./data/cde_ped_data.js"></script>
-  <script src="./data/cde_bike_data.js"></script>
+  <script src="./data/cde_ped.js"></script>
+  <script src="./data/cde_bike.js"></script>
   <script src="./data/cde_comms.js"></script>
   <script src="./data/cde_stats.js"></script>
   <!---LOAD CONFIG LOGIC-->
   <script src="./js/config.js"></script>
   <!---LOAD APP LOGIC-->
-  <script src="./js/main.js"></script>
+  <script src="./js/main.js?1005"></script>
 
 </body>
 

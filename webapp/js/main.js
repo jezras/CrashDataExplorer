@@ -844,21 +844,26 @@ function doChart(countsByYear, whichYears, label) {
 }
 
 //ASSIGN EVENTS
-document.getElementById("linkPed").addEventListener("click", function () { manageButtonState(type_crashes, type_ped) })
-document.getElementById("linkBike").addEventListener("click", function () { manageButtonState(type_crashes, type_bike) })
-document.getElementById("linkRace").addEventListener("click", function () { manageButtonState(type_census, type_race) })
-document.getElementById("linkEth").addEventListener("click", function () { manageButtonState(type_census, type_eth) })
-document.getElementById("linkPov").addEventListener("click", function () { manageButtonState(type_census, type_pov) })
-document.getElementById("linkMode").addEventListener("click", function () { manageButtonState(type_census, type_mode) })
-document.getElementById("linkChi").addEventListener("click", function () { manageButtonState(type_census, type_chi) })
-document.getElementById("linkHou").addEventListener("click", function () { manageButtonState(type_census, type_hou) })
-document.getElementById('heatButton').addEventListener("click", function () { checkHeat() })
-document.getElementById('markerButton').addEventListener("click", function () { checkMarkers() })
-document.getElementById('commButton').addEventListener("click", function () { checkCommunity() })
+document.getElementById('closeInfoOverlayLink1').addEventListener("click", function () { closeInfoOverlay() });
+document.getElementById('closeStartOverlayLink1').addEventListener("click", function () { closeStartOverlay() });
+document.getElementById('closeInfoOverlayLink2').addEventListener("click", function () { closeInfoOverlay() });
+document.getElementById('closeStartOverlayLink2').addEventListener("click", function () { closeStartOverlay() });
+document.getElementById('openInfoOverlayLink').addEventListener("click", function () { openInfoOverlay() });
+document.getElementById("linkPed").addEventListener("click", function () { manageButtonState(type_crashes, type_ped) });
+document.getElementById("linkBike").addEventListener("click", function () { manageButtonState(type_crashes, type_bike) });
+document.getElementById("linkRace").addEventListener("click", function () { manageButtonState(type_census, type_race) });
+document.getElementById("linkEth").addEventListener("click", function () { manageButtonState(type_census, type_eth) });
+document.getElementById("linkPov").addEventListener("click", function () { manageButtonState(type_census, type_pov) });
+document.getElementById("linkMode").addEventListener("click", function () { manageButtonState(type_census, type_mode) });
+document.getElementById("linkChi").addEventListener("click", function () { manageButtonState(type_census, type_chi) });
+document.getElementById("linkHou").addEventListener("click", function () { manageButtonState(type_census, type_hou) });
+document.getElementById('heatButton').addEventListener("click", function () { checkHeat() });
+document.getElementById('markerButton').addEventListener("click", function () { checkMarkers() });
+document.getElementById('commButton').addEventListener("click", function () { checkCommunity() });
 
 //INIT THE INTERFACE
 function setTitles() {
-	document.title = localeLongName + " Crash Data Explorer for Vision Zero"
+	document.title = localeLongName + " Crash Data Explorer for Vision Zero";
 	document.getElementById('mainTitleName').innerHTML = localeLongName;
 	document.getElementById('overlayTitleName').innerHTML = localeLongName;
 	document.getElementById('aboutTitleName').innerHTML = localeLongName;
