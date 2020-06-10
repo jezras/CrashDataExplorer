@@ -1,7 +1,0 @@
-nocommit/
-.gitignore
-.vscode
-.Rhistory
-shapefiles
-crash.code-workspace
-censustoken.txt
