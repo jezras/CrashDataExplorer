@@ -35,7 +35,7 @@ The Columbus Ohio example simply needs to be provided with a Census API Key and 
 
 ## Creating a version for another locaity
 
-The "heavy lift" of creating a Crash Data Explorer for a different locality is converting crash and community boundary data for your locality into the GeoJson formats required by Crash Data Explorer. Because data differs between states or localities it is not possible to provide a universal script for converting data, however example scripts are provided for Columbus Ohio. Yet as such, some ability with Python and Geopandas is required. Ultimately, your data must be converted into the following three *.js* files to be located in *webapp/data/*, which each defining a GeoJSON object that is used by Crash Data Explorer.
+The "heavy lift" of creating a Crash Data Explorer for a different locality is converting crash and community boundary data for your locality into the GeoJSON formats required by Crash Data Explorer. Because data differs between states or localities it is not possible to provide a universal script for converting data, however example scripts are provided for Columbus Ohio. Yet as such, some ability with Python and Geopandas is required. Ultimately, your data must be converted into the following three *.js* files to be located in *webapp/data/*, which each defining a GeoJSON object that is used by Crash Data Explorer.
 
 * *cde_ped.js*: Contains GeoJSON points and properties for pedestrian crashes
 * *cde_bike.js*: Contains GeoJSON points and properties for bike crashes

@@ -1,4 +1,5 @@
 nocommit/
+.gitignore
 .vscode
 .Rhistory
 shapefiles

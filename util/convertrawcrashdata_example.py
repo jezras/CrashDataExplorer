@@ -4,14 +4,15 @@ import requests
 import json
 from shapely.geometry import Point
 from geopandas import GeoDataFrame
+import matplotlib.pyplot as plt
 
 # PURPOSE OF THIS SCRIPT
 # A script like this needs to be created for each state or county
 # This example coverts Ohio formated crash data for use with Crash Data Explorer
 
 # CONFIG options and inputs
-# Name of a file downloaded from Ohio GCATS
-file_input = "util/gcatResult_data.csv"
+# Name of a file downloaded from Ohio GCATS (the online source for Ohio's crash data)
+file_input = "util/nocommit/gcatResult_dataFranklin.csv"
 # file_input = "util/Raw_20152019PedBikeAll_Edit.csv"
 # Name of file to create as output
 ped_file_output = "webapp/data/cde_ped_data.js"
@@ -21,7 +22,7 @@ ped_js_variable = "PedCrashes"
 bike_js_variable = "BikeCrashes"
 
 # DFEFINE functions
-# 1: Assemble rough road name from multiple columns
+# 1: Assemble a rough road name from multiple columns
 
 
 def getRoadName(row):
@@ -44,6 +45,15 @@ def isInfluenced(row):
     infField2 = row['U1_IS_MARIJUANA_SUSPECTED']
     infField3 = row['U1_IS_OTHER_DRUG_SUSPECTED']
     if str(infField1) == 'Y' or str(infField2) == 'Y' or str(infField3) == 'Y':
+        return 1
+    else:
+        return 0
+
+
+def isPedBlame(row):
+    blameField1 = row['unit1blamed']
+    blameField2 = row['unit1ispedbike']
+    if int(blameField1) == 1 and int(blameField2) == 1:
         return 1
     else:
         return 0
@@ -179,19 +189,44 @@ originals_pd['unit3ispedbike'] = originals_pd.apply(
 keepArray = ['OBJECTID', 'year', 'month', 'dayinweek', 'hour', 'latitude', 'longitude', 'severity', 'notinjured', 'injuredmaybe', 'injuredyes', 'fatalities', 'crashtype', 'units', 'lightingcondition', 'road', 'municipality', 'lanes', 'youngdriver', 'alchohol', 'drugs', 'distracted', 'schoolzone', 'senior', 'speeding', 'roadcondition',
              'weathercondition', 'unit1type', 'unit1ispedbike', 'unit1age', 'unit1gender', 'unit1speedreported', 'unit1speedposted', 'unit1trafficcontrol', 'unit1influenced', 'unit1blamed', 'unit2type', 'unit2ispedbike', 'unit2age', 'unit2gender', 'unit2speedreported', 'unit2speedposted', 'unit2trafficcontrol', 'unit3type', 'unit3ispedbike']
 
+
 # BIKE OUTPUT
-geojson = pd_to_geojson(
-    originals_pd[originals_pd["crashtype"] == 11], keepArray)
-with open(bike_file_output, 'w') as output_file:
-    output_file.write('var '+bike_js_variable+' = ')
-    json.dump(geojson, output_file, indent=2)
+# geojson = pd_to_geojson(
+#    originals_pd[originals_pd["crashtype"] == 11], keepArray)
+# with open(bike_file_output, 'w') as output_file:
+#    output_file.write('var '+bike_js_variable+' = ')
+#    json.dump(geojson, output_file, indent=2)
 # PED OUTPUT
-geojson = pd_to_geojson(
-    originals_pd[originals_pd["crashtype"] == 8], keepArray)
-with open(ped_file_output, 'w') as output_file:
-    output_file.write('var '+ped_js_variable+' = ')
-    json.dump(geojson, output_file, indent=2)
-print("File output successful")
+# geojson = pd_to_geojson(
+#    originals_pd[originals_pd["crashtype"] == 8], keepArray)
+# with open(ped_file_output, 'w') as output_file:
+#    output_file.write('var '+ped_js_variable+' = ')
+#    json.dump(geojson, output_file, indent=2)
+#print("File output successful")
 
 # OUTPUT csv file if needed for checking
 # count.to_csv("util/output.csv", index=False)
+
+
+# TEMP TEMP TEMP DO NOT COMMIT
+# CREATE crash GeoDataFrame
+originals_pd['pedblame'] = originals_pd.apply(isPedBlame, axis=1)
+
+geometry = [Point(xy)
+            for xy in zip(originals_pd.longitude, originals_pd.latitude)]
+originals_pd = originals_pd.drop(
+    ['longitude', 'latitude'], axis=1)
+crs = 'EPSG:4269'
+originals_pd = GeoDataFrame(originals_pd, crs=crs, geometry=geometry)
+print("GeoDataFrame created")
+print(originals_pd.head())
+
+
+ispedblame_gpd = originals_pd[originals_pd.pedblame == 0]
+type(ispedblame_gpd)
+gp.geodataframe.GeoDataFrame
+
+fig, ax = plt.subplots()
+ax.set_aspect('equal')
+ispedblame_gpd.plot(ax=ax, marker='o', color='red', markersize=5)
+plt.show()
