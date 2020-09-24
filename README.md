@@ -1,6 +1,6 @@
-# Crash Data Explorer for Vision Zero
+# Crash Data Explorer
 
-The ambitious goal of Vision Zero initiatives to eliminate fatalities and severe injuries requires new and openly accessible tools that can be shared and used by communities, agencies, and activists alike. Crash Data Explorer for Vision Zero is an open source analysis and engagement tool for pedestrian and bike safety. It is a client-side javascript web application leveraging Leaflet, Chart.js, and CitySDK. Its main requirement is for crash and boundary data to be converted into specified GeoJSON formats. Sample Python scripts which do this for Columbus Ohio’s crash data and geographies are provided with the source code.
+The goal of reducing or eliminating traffic fatalities and severe injuries in cities requires new and openly accessible tools that can be used and shared by community groups, agencies, and activists alike. Crash Data Explorer is an open source analysis and engagement tool for urban pedestrian and bike safety. It is a fast client-side javascript web application leveraging Leaflet, Chart.js, and CitySDK. Its main setup requirement is for traffic crash and boundary data to be converted into specified GeoJSON formats. Sample Python scripts which do this for Columbus Ohio’s crash data and geographies are provided with the source code.
 
 ## Data Requirements
 
@@ -65,11 +65,12 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 
 ## Acknowledgments
 
-Crash Data Explorer for Vision Zero is made possible in part thanks to the support and/or encouragement of the following:
+Crash Data Explorer is made possible in part thanks to the support and/or encouragement of the following:
 
 * The Ohio State University
 * The STEAM Factory
 * The Center for Urban and Regional Analysis
+* Smart Columbus
 * The Ohio Department of Transportation
 * The City of Columbus
 * The Mid-Ohio Regional Planning Commision
