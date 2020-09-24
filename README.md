@@ -17,7 +17,7 @@ For your locality's communities dataset, the following variables are required fo
 * Area Name
 * Polygon coordinates
 
-If you don't have access to these sorts of datasets about your community, you may need to seek partnerships such as with a local university, and/or advoate for open data before you can create an instance of Crash Data Explorer. 
+If you don't have access to these sorts of datasets about your community, you may need to seek partnerships such as with a local university, and/or advocate for open data before you can create an instance of Crash Data Explorer. 
 
 ## Environment Requirements
 
