@@ -13,7 +13,6 @@ import matplotlib.pyplot as plt
 # CONFIG options and inputs
 # Name of a file downloaded from Ohio GCATS (the online source for Ohio's crash data)
 file_input = "util/nocommit/gcatResult_dataFranklin.csv"
-# file_input = "util/Raw_20152019PedBikeAll_Edit.csv"
 # Name of file to create as output
 ped_file_output = "webapp/data/cde_ped_data.js"
 bike_file_output = "webapp/data/cde_bike_data.js"
@@ -191,42 +190,18 @@ keepArray = ['OBJECTID', 'year', 'month', 'dayinweek', 'hour', 'latitude', 'long
 
 
 # BIKE OUTPUT
-# geojson = pd_to_geojson(
-#    originals_pd[originals_pd["crashtype"] == 11], keepArray)
-# with open(bike_file_output, 'w') as output_file:
-#    output_file.write('var '+bike_js_variable+' = ')
-#    json.dump(geojson, output_file, indent=2)
+geojson = pd_to_geojson(
+    originals_pd[originals_pd["crashtype"] == 11], keepArray)
+with open(bike_file_output, 'w') as output_file:
+    output_file.write('var '+bike_js_variable+' = ')
+    json.dump(geojson, output_file, indent=2)
 # PED OUTPUT
-# geojson = pd_to_geojson(
-#    originals_pd[originals_pd["crashtype"] == 8], keepArray)
-# with open(ped_file_output, 'w') as output_file:
-#    output_file.write('var '+ped_js_variable+' = ')
-#    json.dump(geojson, output_file, indent=2)
-#print("File output successful")
+geojson = pd_to_geojson(
+    originals_pd[originals_pd["crashtype"] == 8], keepArray)
+with open(ped_file_output, 'w') as output_file:
+    output_file.write('var '+ped_js_variable+' = ')
+    json.dump(geojson, output_file, indent=2)
+print("File output successful")
 
 # OUTPUT csv file if needed for checking
 # count.to_csv("util/output.csv", index=False)
-
-
-# TEMP TEMP TEMP DO NOT COMMIT
-# CREATE crash GeoDataFrame
-originals_pd['pedblame'] = originals_pd.apply(isPedBlame, axis=1)
-
-geometry = [Point(xy)
-            for xy in zip(originals_pd.longitude, originals_pd.latitude)]
-originals_pd = originals_pd.drop(
-    ['longitude', 'latitude'], axis=1)
-crs = 'EPSG:4269'
-originals_pd = GeoDataFrame(originals_pd, crs=crs, geometry=geometry)
-print("GeoDataFrame created")
-print(originals_pd.head())
-
-
-ispedblame_gpd = originals_pd[originals_pd.pedblame == 0]
-type(ispedblame_gpd)
-gp.geodataframe.GeoDataFrame
-
-fig, ax = plt.subplots()
-ax.set_aspect('equal')
-ispedblame_gpd.plot(ax=ax, marker='o', color='red', markersize=5)
-plt.show()
