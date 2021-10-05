@@ -62,7 +62,7 @@ map.setView([centerLat, centerLong], 11);
 
 //INTERFACE CONTROLS AND UTILITIES
 function openInfoOverlay() {
-	document.getElementById("infoOverlay").style.opacity = "0.9";
+	document.getElementById("infoOverlay").style.opacity = "0.95";
 	document.getElementById("infoOverlay").style.height = "100%";
 }
 
@@ -863,13 +863,11 @@ document.getElementById('commButton').addEventListener("click", function () { ch
 
 //INIT THE INTERFACE
 function setTitles() {
-	document.title = localeLongName + " Crash Data Explorer for Vision Zero";
+	document.title = localeLongName + " Crash Data Explorer";
 	document.getElementById('mainTitleName').innerHTML = localeLongName;
-	document.getElementById('overlayTitleName').innerHTML = localeLongName;
 	document.getElementById('aboutTitleName').innerHTML = localeLongName;
 	document.getElementById('statsPanelName').innerHTML = localeLongName;
-	document.getElementById('overlayDescription1').innerHTML = aboutDescription;
-	document.getElementById('overlayDescription2').innerHTML = aboutDescription;
+	document.getElementById('overlayDescription').innerHTML = aboutDescription;
 }
 
 function setSliders() {
@@ -882,7 +880,7 @@ function setSliders() {
 		step: 1,
 		pips: {
 			mode: 'count',
-			values: 5,
+			values: years.length,
 			density: 50
 		},
 		start: [years[0], years[years.length - 1]],
@@ -974,3 +972,6 @@ if (showAdvocacy) {
 setSourceNotes();
 setDevNotes();
 setSliders();
+
+//Show ped crashes on open
+manageButtonState(type_crashes, type_ped)

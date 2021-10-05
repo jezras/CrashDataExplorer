@@ -1,5 +1,4 @@
 body {
-  background-color:#152238;
   font-family: 'Quicksand', 'Open Sans', sans-serif;
   font-size:11px;
   margin:0;
@@ -22,11 +21,9 @@ li {
 OUTER FRAMING AND NAV
 */
 .container {
-  background-color:#ddd;
+  background-color:#fff;
   height: 100%;
   padding: 6px 12px 10px 12px;
-  border: 1px solid #000;
-  border-radius: 20px;
 }
 .main {
   width:1078px;
@@ -576,7 +573,7 @@ OVERLAYS
   left: 0;
   top: 0;
   background-color: #87ceeb;
-  opacity: 0.9;
+  opacity: 0.95;
   overflow-x: hidden; /* Disable horizontal scroll */
   transition: 0.5s; /* 0.5 second transition effect to slide in or slide down the overlay (height or width, depending on reveal) */
 }
@@ -648,7 +645,7 @@ OVERLAYS
 .overlayLink {
   clear:both;
 }
-#overlayDescription1, #overlayDescription2 {
+#overlayDescription {
   position: relative;
   clear:both;
   margin:5px 10px 5px 10px;

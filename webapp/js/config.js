@@ -3,33 +3,35 @@
 //CONTENT
 //Note: for SEO purposes you may want to also have this text hardcoded in the HTML as in the Columbus example
 var localeShortName = "CBUS"
-var localeLongName = "Columbus Ohio"
+var localeLongName = "Columbus"
 var localeTechnicalName = "Franklin County"
-var aboutDescription = "Pedestrians and cyclists are the most vulnerable road users. The motor vehicle crashes that put them at risk are not accidental, but are related to weaknesses in our transportation system, including street design, road speed, and enforcement. Use this interactive map to explore the pattern of pedestrian and cyclist-involved crashes in our area and its connection to communities and underlying demographics to see who is most at risk. Click on markers where crashes occurred for details and street views to consider the role of the built environment."
+var aboutDescription = 'Columbus Crash Data Explorer is a web application that allows users to explore patterns of pedestrian and cyclist crashes in the Columbus metropolitan area and understand their connection to different communities and built environments. It was developed at The Ohio State University through a <a href="https://steamfactory.osu.edu/">STEAM Factory</a> postdoctoral research fellowship, with the support of <a href="https://cura.osu.edu/">The Center for Urban and Regional Analysis (CURA)</a>.'
 //Show an advocacy box with up to four links
-var showAdvocacy = 1
+var showAdvocacy = 0
 var advocacyLinks = [] //required if above==1
 advocacyLinks.push('<a href = "https://vision-zero-columbus.hub.arcgis.com/">Vision Zero Columbus</a>');
 advocacyLinks.push('<a href="https://visionzeronetwork.org/">Vision Zero Network</a>');
 advocacyLinks.push('<a href = "https://smartgrowthamerica.org/program/national-complete-streets-coalition/publications/what-are-complete-streets/">Complete Streets(Smart Growth America)</a>');
 //Sources and notes on the about overlay
 var sourcesNotes = []
-sourcesNotes.push('Crash data is collected by the Ohio Department of Transportation and is available through the <a href="https://www.smartcolumbusos.com/">Smart Columbus Operating System</a>');
-sourcesNotes.push('Demographic data is from the American Community Survey and is accessed through APIs provided by the <a href="https://www.census.gov/developers/">US Census</a> Bureau');
+sourcesNotes.push('Crash data is collected by the Ohio Department of Public Safety and Ohio Department of Transportation');
+sourcesNotes.push('Demographic data is from the 2018 American Community Survey and is accessed through APIs provided by the <a href="https://www.census.gov/developers/">US Census</a> Bureau');
 sourcesNotes.push('Google street views may not reflect street design at the time of crashes');
 var devNotes = []
-devNotes.push('Created with <a href="http://www.crashdataexplorer.org/">Crash Data Explorer for Vision Zero</a>, an open source <a href="https://leafletjs.com/">Leaflet</a> map application.');
+devNotes.push('Open source code is available in the <a href="https://github.com/jezras/CrashDataExplorer">Crash Data Explorer GitHub repository</a> and assistance is available through the <a href="http://www.crashdataexplorer.org/">project website</a>');
+devNotes.push('Crash Data Explorer is built with <a href="https://github.com/Leaflet/Leaflet">Leaflet</a>, <a href="https://github.com/Leaflet/Leaflet.heat">Leaflet Heat</a>, <a href="https://www.chartjs.org/">Chart.js</a>, <a href="https://github.com/uscensusbureau/citysdk/">CitySDK</a>, and <a href="https://geopandas.org/">GeoPandas</a>');
+
+
 
 //MAP CONFIGURATION
 //You can get a Census access token here: https://api.census.gov/data/key_signup.html
-var censusAccessToken = 'YOUR_TOKEN_HERE';
+var censusAccessToken = 'YOUR TOKEN HERE';
 var censusAcsYear = "2018"
-//Display tabular data (requires running python script to generate)
 //Set where to center the map
 var centerLat = 39.970351
 var centerLong = -82.998482
 //Possible range of values for the year and severity variables (depends on your data)
-var years = [2015, 2016, 2017, 2018, 2019]
+var years = [2015, 2016, 2017, 2018, 2019, 2020]
 var severity = [1, 2, 3, 4, 5]
 
 //DATA CONFIGURATION
@@ -51,7 +53,7 @@ var distractedLabels = ["Not an Intersection", "Four-way intersection", "T Inter
 var unittypeLabels = ["Passenger Car", "Minivan", "SUV", "Pick Up", "Cargo Van", "Large Van", "Motorcycle", "Motorcycle (3 Wheels)", "Autocycle", "Moped", "ATV", "Golf Cart", "Snowmobile", "Truck (Box)", "Truck (Semi)", "Farm", "Motorhome", "Limo", "Bus", "Other", "Equipment", "Animal Powered", "Pedestrian", "Wheelchair", "Other NM", "Bicycle", "Train", "Unknown"]
 var trafficcontrolLabels = ["Roundabout", "Signal", "Flasher", "Stop Sign", "Yield Sign", "No Control"]
 //Show a stats box (requires manually preparing a stats data file called cde_stats.js as in Columbus example)
-var showStats = 1
+var showStats = 0
 
 //MAP STYLE 
 var circlePedStyle = {
