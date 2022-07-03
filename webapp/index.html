@@ -13,7 +13,7 @@
   <!--[if lte IE 8]>
     <link rel="stylesheet" href="node_modules/leaflet/dist/leaflet.ie.css" />
   <![endif]-->
-  <link rel="stylesheet" href="./css/style.css?1006">
+  <link rel="stylesheet" href="./css/style.css?1008">
 
 </head>
 
@@ -23,16 +23,13 @@
     <span class="closebtn" id="closeStartOverlayLink1">&times;</span>
     <div class="overlayContent">
       <div class="overlayTitle">
-        The <span id="overlayTitleName" style="color:#CE1126">Columbus Ohio</span> Pedestrian and Cyclist Traffic
+        <span id="overlayTitleName" style="color:#CE1126">Columbus Ohio</span> Pedestrian and Cyclist
         Crash Data Explorer
       </div>
-      <div id="overlayDescription">Pedestrians and cyclists are the most vulnerable road users. The motor vehicle
-        crashes that put them at risk are not accidental, but are related to weaknesses in our transportation system,
-        including street design, road speed, and enforcement. Use this interactive map to explore the pattern of
-        pedestrian and cyclist-involved crashes in our area and its connection to communities and underlying
-        demographics to see who is most at risk. Click on markers where crashes occurred for details and street views
-        to
-        consider the role of the built environment.</div>
+      <div id="overlayIntroDescription">Through this interface you can explore patterns of pedestrian and cyclist
+        crashes in the Columbus Metro area and understand their connection to different communities and built
+        environments.
+      </div>
       <div class="overlayLink">
         <span id="closeStartOverlayLink2">START EXPLORING THE MAP >></span>
       </div>
@@ -43,15 +40,10 @@
     <span class="closebtn" id="closeInfoOverlayLink1">&times;</span>
     <div class="overlayContent">
       <div class="overlayTitle">
-        The <span id="aboutTitleName" style="color:#CE1126">Columbus Ohio</span> Pedestrian and Cyclist Traffic Crash
-        Data Explorer
+        The <span id="aboutTitleName" style="color:#CE1126">COLUMBUS</span> Pedestrian and Cyclist Traffic
+        Crash Data Explorer
       </div>
-      <div id="overlayDescription">Pedestrians and cyclists are the most vulnerable road users. The motor vehicle
-        crashes that put them at risk are not accidental, but are related to weaknesses in our transportation system,
-        including street design, road speed, and enforcement. Use this interactive map to explore the pattern of
-        pedestrian and cyclist-involved crashes in our area and its connection to communities and underlying
-        demographics to see who is most at risk. Click on markers where crashes occurred for details and street views to
-        consider the role of the built environment.</div>
+      <div id="overlayAboutDescription"></div>
       <div class="overlayDataNotes">
         <strong>Data Sources and Notes:</strong>
         <div id="sourceNotesList"></div>
@@ -71,11 +63,11 @@
     <div class="container">
       <div class="containerTitle">
         <div class="mainTitle">
-          <span id="mainTitleName" style="color:#CE1126">Columbus Ohio</span> Pedestrian and Cyclist Traffic Crash Data
+          <span id="mainTitleName" style="color:#CE1126">COLUMBUS</span> Pedestrian and Cyclist Crash Data
           Explorer
         </div>
         <div class="navRight">
-          <span id="openInfoOverlayLink">About</span>
+          <span id="openInfoOverlayLink">Attribution</span>
         </div>
       </div>
       <div class="containerBody">
@@ -126,7 +118,7 @@
               </div>
             </div>
           </div>
-          <div class="blockChart">
+          <div class="blockChart" id="showBlockChart">
             <canvas id="line-chart" width="422px" height=120px></canvas>
           </div>
           <div class="blockCommunity">
@@ -166,14 +158,14 @@
               <div class="legendDemo">
                 <div id="legendCensus"></div>
               </div>
-              <div class="navigationDemo">
+              <div id="navigationDemo" class="navigationDemo">
                 <div class="buttonRow1Census">
                   <span id="linkPov" class="standardButton">Poverty</span> <span id="linkHou"
                     class="standardButton">Housing</span> <span id="linkMode" class="standardButton">Travel
                     Mode</span>
                 </div>
                 <div class="buttonRow2Census"> <span href="#" id="linkRace" class="standardButton">Race</span> <span
-                    id="linkEth" class="standardButton">Ethnicity</span> <span id="linkChi"
+                    id="linkEth" class="standardButton">Immigration</span> <span id="linkChi"
                     class="standardButton">Children</span>
                 </div>
                 <div id="labelCensus"></div>
@@ -183,40 +175,24 @@
         </div>
       </div>
     </div>
-
-    <div class="subcontainer" id="statPanel">
-      <div style="width:100%;">
-        <span class="submainTitle"><span style="color:#CE1126">Stats</span> about community traffic safety in
-          <span id="statsPanelName">Columbus, Ohio</span>:</span>
-      </div>
-      <div id="statContain"></div>
-    </div>
-
-    <div class="subcontainer" id="advocatePanel">
-      <span class="submainTitle"><span style="color:#CE1126">Learn</span> about ways you can advocate for safer
-        streets:</span>
-      <div id="linkList"></div>
-    </div>
   </div>
-
 
 
   <!---LOAD REQUIRED LIBRARIES-->
   <script src="./js/ext/leaflet.js"></script>
   <script src="./js/ext/leaflet-heat.js"></script>
   <script src="./js/ext/turf.min.js"></script>
-  <script src="./js/ext/citysdk.js"></script>
+  <script src="./js/ext/citysdk.js?1001"></script>
   <script src="./js/ext/nouislider.js"></script>
   <script src="./js/ext/Chart.min.js"></script>
   <!---LOAD REQUIRED DATA-->
   <script src="./data/cde_ped.js?1001"></script>
   <script src="./data/cde_bike.js?1001"></script>
   <script src="./data/cde_comms.js"></script>
-  <script src="./data/cde_stats.js"></script>
-  <!---LOAD CONFIG LOGIC-->
-  <script src="./js/config.js"></script>
+  <!---LOAD CITY CONFIG FILE-->
+  <script src="./js/config.js?1002"></script>
   <!---LOAD APP LOGIC-->
-  <script src="./js/main.js?1006"></script>
+  <script src="./js/main.js?1010"></script>
 
 </body>
 

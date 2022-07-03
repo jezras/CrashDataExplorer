@@ -53,14 +53,7 @@ var lineChart = null;
 var currentCrashesTitle = "";
 var currentCrashesCount = "";
 
-//INITIALIZE MAP
-var map = L.map('map', {
-	scrollWheelZoom: false, minZoom: 10, maxZoom: 14
-});
-// set the position and zoom level of the map
-map.setView([centerLat, centerLong], 11);
-
-//INTERFACE CONTROLS AND UTILITIES
+//OVERLAYS
 function openInfoOverlay() {
 	document.getElementById("infoOverlay").style.opacity = "0.95";
 	document.getElementById("infoOverlay").style.height = "100%";
@@ -71,11 +64,35 @@ function closeInfoOverlay() {
 	document.getElementById("infoOverlay").style.height = "0%";
 }
 
+function openStartOverlay() {
+	document.getElementById("launchOverlay").style.opacity = "0.95";
+	document.getElementById("launchOverlay").style.height = "100%";
+}
+
 function closeStartOverlay() {
 	document.getElementById("launchOverlay").style.opacity = "0";
 	document.getElementById("launchOverlay").style.height = "0%";
 }
 
+const params = new URLSearchParams(window.location.search)
+if (params.has('showOverlayOnLaunch')) {
+	if (params.get('showOverlayOnLaunch') == "1") {
+		openStartOverlay()
+	}
+}
+else if (showOverlayOnLaunch) {
+	openStartOverlay()
+}
+
+
+//INITIALIZE MAP
+var map = L.map('map', {
+	scrollWheelZoom: false, minZoom: 10, maxZoom: 14
+});
+// set the position and zoom level of the map
+map.setView([centerLat, centerLong], 11);
+
+//INTERFACE CONTROLS AND UTILITIES
 function checkHeat() {
 	checkedHeat = document.getElementById('heatButton').checked
 	showHeatMap();
@@ -218,22 +235,24 @@ function switchMap(type, num) {
 		document.getElementById("legendCensus").innerHTML = "";
 		document.getElementById("labelCensus").style.display = "hidden";
 		if (num == type_race) { //black
-			doCensusMap(1, centerLat, centerLong, "B01003_001E", "B02001_003E", null, null, null, "Percent of Population Who Identify as Black or African American", 3)
+			doCensusMap(1, centerLat, centerLong, "B01003_001E", "B02001_003E", null, null, null, "Percent of Population Who Identify as Black or African American", 3, false)
 		}
-		else if (num == type_eth) { //ethnicity
-			doCensusMap(2, centerLat, centerLong, "B01003_001E", "B03001_003E", null, null, null, "Percent of Population Who Identify as Hispanic or Latino", 3)
+		else if (num == type_eth) { //ethnicity (changed to immigration)
+			//doCensusMap(2, centerLat, centerLong, "B01003_001E", "B03001_003E", null, null, null, "Percent of Population Who Identify as Hispanic or Latino", 3)
+			doCensusMap(2, centerLat, centerLong, "B06001_001E", "B06001_049E", null, null, null, "Percent of Population that are Foreign Born", 3, false)
 		}
 		else if (num == type_pov) { //poverty below 100
-			doCensusMap(3, centerLat, centerLong, "B01003_001E", "B06012_002E", null, null, null, "Percent of Population Below Poverty Level", 3)
+			doCensusMap(3, centerLat, centerLong, "B01003_001E", "B06012_002E", null, null, null, "Percent of Population Below Poverty Level", 3, false)
 		}
 		else if (num == type_mode) { //travel
-			doCensusMap(4, centerLat, centerLong, "B01003_001E", "B08301_019E", "B08301_018E", "B08301_011E", null, "Percent of Population Who Walked, Biked or Rode Bus to Work", 1)
+			doCensusMap(4, centerLat, centerLong, "B01003_001E", "B08301_019E", "B08301_018E", "B08301_011E", null, "Percent of Population Who Walked, Biked or Rode Bus to Work", 1, false)
 		}
 		else if (num == type_chi) { //children
-			doCensusMap(5, centerLat, centerLong, "B01003_001E", "B01001_029E", "B01001_005E", "B01001_028E", "B01001_004E", "Percent of Children Aged 5 to 14 Years", 2)
+			doCensusMap(5, centerLat, centerLong, "B01003_001E", "B01001_029E", "B01001_005E", "B01001_028E", "B01001_004E", "Percent of Children Aged 5 to 14 Years", 2, false)
 		}
 		else if (num == type_hou) { //housing
-			doCensusMap(6, centerLat, centerLong, "B25001_001E", "B25003_003E", null, null, null, "Percent of Renter Occupied Units", 4)
+			//doCensusMap(6, centerLat, centerLong, "B25001_001E", "B25003_003E", null, null, null, "Percent of Renter Occupied Units", 4)
+			doCensusMap(6, centerLat, centerLong, "B25024_001E", "B25024_002E", "B25024_003E", null, null, "Percent of Units in Non-Single Family Structures ", 4, true)
 		}
 	}
 	else if (type == type_crashes) {
@@ -266,7 +285,12 @@ function switchMap(type, num) {
 				onEachFeature: function (feature, layer) {
 					if (compareAgainstSettings(feature)) {
 						if (coords_length == 0) {
-							topush = [feature.geometry.coordinates[1], feature.geometry.coordinates[0], (invertSeverityValues(feature.properties.severity) * 20) / 100, feature.properties.year]
+							if (invertSeverity) {
+								topush = [feature.geometry.coordinates[1], feature.geometry.coordinates[0], (invertSeverityValues(feature.properties.severity) * 20) / 100, feature.properties.year]
+							}
+							else {
+								topush = [feature.geometry.coordinates[1], feature.geometry.coordinates[0], (feature.properties.severity * 20) / 100, feature.properties.year]
+							}
 							pointcoords_ped.push(topush);
 							pointcoords_ped_heat.push(topush.slice(0, 3))
 							yeartoindex = feature.properties.year - years[0]
@@ -277,9 +301,9 @@ function switchMap(type, num) {
 							'<ul><li><span class="listlabel">Type</span>: Pedestrian-Involved</li>' +
 							'<li><span class="listlabel">Year</span>: ' + feature.properties.year + '</li>' +
 							'<li><span class="listlabel">Road</span>: ' + new String(feature.properties.road).toUpperCase() + '</li>' +
+							'<li><span class="listlabel">Lanes</span>: ' + feature.properties.lanes + '</li>' +
 							'<li><span class="listlabel">Injury</span>: ' + injuryLabels[parseInt(feature.properties.severity) - 1] + '</li>' +
 							//'<li><span class="listlabel">Speed Limit</span>: ' + getNumber(feature.properties.drv_posted_nbr) + '</li>' +
-							'<li><span class="listlabel">Lighting</span>: ' + lightingconditionLabels[parseInt(feature.properties.lightingcondition) - 1] + '</li>' +
 							'<li><a target="_blank" href="' + getStreetViewURL(feature.geometry.coordinates[1], feature.geometry.coordinates[0]) + '">Launch Street View in New Tab</a></li></ul>'
 						);
 					}
@@ -311,7 +335,12 @@ function switchMap(type, num) {
 				onEachFeature: function (feature, layer) {
 					if (compareAgainstSettings(feature)) {
 						if (coords_length == 0) {
-							topush = [feature.geometry.coordinates[1], feature.geometry.coordinates[0], (invertSeverityValues(feature.properties.severity) * 20) / 100, feature.properties.year]
+							if (invertSeverity) {
+								topush = [feature.geometry.coordinates[1], feature.geometry.coordinates[0], (invertSeverityValues(feature.properties.severity) * 20) / 100, feature.properties.year]
+							}
+							else {
+								topush = [feature.geometry.coordinates[1], feature.geometry.coordinates[0], (feature.properties.severity * 20) / 100, feature.properties.year]
+							}
 							pointcoords_bike.push(topush);
 							pointcoords_bike_heat.push(topush.slice(0, 3))
 							yeartoindex = feature.properties.year - years[0]
@@ -322,9 +351,9 @@ function switchMap(type, num) {
 							'<ul><li><span class="listlabel">Type</span>: Cyclist-Involved</li>' +
 							'<li><span class="listlabel">Year</span>: ' + feature.properties.year + '</li>' +
 							'<li><span class="listlabel">Road</span>: ' + new String(feature.properties.road).toUpperCase() + '</li>' +
+							'<li><span class="listlabel">Lanes</span>: ' + feature.properties.lanes + '</li>' +
 							'<li><span class="listlabel">Injury</span>: ' + injuryLabels[parseInt(feature.properties.severity) - 1] + '</li>' +
 							//'<li><span class="listlabel">Speed Limit: ' + getNumber(feature.properties.drv_posted_nbr) + '</li>' +
-							'<li><span class="listlabel">Lighting</span>: ' + lightingconditionLabels[parseInt(feature.properties.lightingcondition) - 1] + '</li>' +
 							'<li><a target="_blank" href="' + getStreetViewURL(feature.geometry.coordinates[1], feature.geometry.coordinates[0]) + '">Launch Street View in New Tab</a></li></ul>'
 						);
 					}
@@ -354,6 +383,7 @@ for (i = 0; i < years.length; i++) {
 }
 
 function countPointsInPolygon(pointcoords, polygon) {
+	loadStart();
 	var totalcount = pointcoords.length
 	var thiscount = 0
 	var thiscountfs = 0
@@ -375,6 +405,7 @@ function countPointsInPolygon(pointcoords, polygon) {
 		}
 	}
 	var returnArray = [thiscount, thiscountfs, totalcount, countbyyear_temp]
+	loadStop();
 	return returnArray;
 }
 
@@ -410,13 +441,18 @@ function showCommunities() {
 				var feature = e.popup._source.feature;
 				var count = countPointsInPolygon(pointcoords_ped, feature);
 				document.getElementById('ccount' + feature.properties.OBJECTID).innerHTML = count[0] + " crashes matching these settings";
-				if (transon == type_ped) { //need this check in case it was swtiched off
+				if (transon == type_ped) { //need this check in case it was switched off
 					if (count[0] > 0 & severityActive[0] == 1 & severityActive[1] == 5) {
 						document.getElementById('ccount' + feature.properties.OBJECTID).innerHTML += "</br>" + Math.round((count[1] / count[0]) * 100) + "% are severe or fatal";
 					}
 					document.getElementById('ccount' + feature.properties.OBJECTID).innerHTML += "</br></br>This community has " + formatPercent(count[0], count[2]) + " of all crashes matching these settings";
 					doChart(count[3], yearsActive, "Pedestrian Crashes")
-					document.getElementById("titleCrashes").innerHTML = "Pedestrian-Involved Crashes in " + feature.properties.AREA_NAME.toUpperCase()
+					if (showTrends) {
+						document.getElementById("titleCrashes").innerHTML = "Pedestrian-Involved Crashes in " + feature.properties.AREA_NAME.toUpperCase()
+					}
+					else {
+						document.getElementById("titleCrashes").innerHTML = ""
+					}
 					document.getElementById("countCrashes").innerHTML = "";
 				}
 				e.propagatedFrom.setStyle(polyCommunityHighlightStyle);
@@ -430,6 +466,7 @@ function showCommunities() {
 		}
 		else if (transon == type_bike) {
 			poly1.on('popupopen', function (e) {
+				loadStart();
 				var feature = e.popup._source.feature;
 				var count = countPointsInPolygon(pointcoords_bike, feature);
 				document.getElementById('ccount' + feature.properties.OBJECTID).innerHTML = count[0] + " crashes matching these settings";
@@ -477,13 +514,9 @@ function showCommunities() {
 
 function showBasemap() {
 	if (!basemap) {
-		//basemap = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=' + mapboxAccessToken, {
-		//	id: 'mapbox.light',
-		//	attribution: 'Ohio DOT; Smart Columbus OS; US Census; MapBox '
-		//	});
 		basemap = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 			id: 'mapbox.light',
-			attribution: 'Ohio DOT; Smart Columbus OS; US Census; OpenStreetMap '
+			attribution: mapAttribution
 		});
 	}
 	if (!basemapon) {
@@ -502,23 +535,12 @@ function showHeatMap() {
 			map.removeLayer(lastheatmap);
 		}
 		if (transon == type_ped) {
-			heat1 = L.heatLayer(pointcoords_ped_heat, {
-				minOpacity: 0.03,
-				radius: 20,
-				blur: 15,
-				maxZoom: 14,
-			})
+			heat1 = L.heatLayer(pointcoords_ped_heat, heatConfig)
 			heat1.addTo(map);
 			lastheatmap = heat1;
 		}
 		else if (transon == type_bike) {
-			heat2 = L.heatLayer(pointcoords_bike_heat, {
-				minOpacity: 0.03,
-				max: 1,
-				radius: 20,
-				blur: 15,
-				maxZoom: 14,
-			})
+			heat2 = L.heatLayer(pointcoords_bike_heat, heatConfig)
 			heat2.addTo(map);
 			lastheatmap = heat2;
 		}
@@ -530,7 +552,7 @@ function showHeatMap() {
 	}
 }
 //CENSUS FUNCTIONS
-function doCensusMap(i, lat, long, bas, val, addval1, addval2, addval3, title, size) {
+function doCensusMap(i, lat, long, bas, val, addval1, addval2, addval3, title, size, invert) {
 	var grades = ["0", "10", "20", "30", "40", "50"]; // size==3
 	if (size == 1) {
 		grades = ["0", "3", "6", "9", "12", "15"];
@@ -572,7 +594,9 @@ function doCensusMap(i, lat, long, bas, val, addval1, addval2, addval3, title, s
 		if (total_pop && total_pop_comp) {
 			// check if valid (no 0s or undefined)
 			var percent = (total_pop_comp / total_pop) * 100;
-			//alert("" + total_pop_comp + "/" + total_pop + "=" + percent);
+			if (invert) {
+				percent = 100 - percent
+			}
 			return {
 				fillColor: getColor(percent, grades),
 				fillOpacity: 0.6,
@@ -660,6 +684,7 @@ function doCensusMap(i, lat, long, bas, val, addval1, addval2, addval3, title, s
 		grades.forEach(makegrade)
 	}
 	else {
+		document.getElementById("legendCensus").innerHTML = "LOADING...";
 		valArray = [bas, val];
 		if (addval1) {
 			valArray[2] = addval1
@@ -674,11 +699,9 @@ function doCensusMap(i, lat, long, bas, val, addval1, addval2, addval3, title, s
 			"vintage": censusAcsYear,
 			geoHierarchy: {
 				// required
-				state: {
-					lat: lat,
-					lng: long
-				},
-				"tract": "*" // <- syntax = "<descendant>" : "*"
+				state: censusStateFips,
+				county: censusCountyFips,
+				tract: "*"
 			},
 			sourcePath: ["acs", "acs5"],
 			"values": valArray,
@@ -686,56 +709,66 @@ function doCensusMap(i, lat, long, bas, val, addval1, addval2, addval3, title, s
 			"geoResolution": "500k"
 		},
 			function (error, response) {
-				if (i == 1) {
-					choro1 = L.geoJson(response, {
-						style: calculatePercents
-					})
-					choro1.addTo(map);
-					lastcensusmap = choro1;
+				if (error) {
+					document.getElementById("legendCensus").innerHTML = "ERROR";
+					document.getElementById("labelCensus").style.display = "none";
+					document.getElementById("navigationDemo").innerHTML = "The Census API is unavailable right now. We apologize for the inconvenience.";
+					loadStop();
 				}
-				else if (i == 2) {
-					choro2 = L.geoJson(response, {
-						style: calculatePercents
-					})
-					choro2.addTo(map);
-					lastcensusmap = choro2;
+				else {
+					console.log(response)
+					document.getElementById("legendCensus").innerHTML = "";
+					if (i == 1) {
+						choro1 = L.geoJson(response, {
+							style: calculatePercents
+						})
+						choro1.addTo(map);
+						lastcensusmap = choro1;
+					}
+					else if (i == 2) {
+						choro2 = L.geoJson(response, {
+							style: calculatePercents
+						})
+						choro2.addTo(map);
+						lastcensusmap = choro2;
+					}
+					else if (i == 3) {
+						choro3 = L.geoJson(response, {
+							style: calculatePercents
+						})
+						choro3.addTo(map);
+						lastcensusmap = choro3;
+					}
+					else if (i == 4) {
+						choro4 = L.geoJson(response, {
+							style: calculatePercents
+						})
+						choro4.addTo(map);
+						lastcensusmap = choro4;
+					}
+					else if (i == 5) {
+						choro5 = L.geoJson(response, {
+							style: calculatePercents
+						})
+						choro5.addTo(map);
+						lastcensusmap = choro5;
+					}
+					else if (i == 6) {
+						choro6 = L.geoJson(response, {
+							style: calculatePercents
+						})
+						choro6.addTo(map);
+						lastcensusmap = choro6;
+					}
+					if (lastcensusmap) {
+						lastcensusmap.bringToBack();
+					}
+					if (lastpointmap) {
+						lastpointmap.bringToFront();
+					}
+					loadStop();
+					grades.forEach(makegrade)
 				}
-				else if (i == 3) {
-					choro3 = L.geoJson(response, {
-						style: calculatePercents
-					})
-					choro3.addTo(map);
-					lastcensusmap = choro3;
-				}
-				else if (i == 4) {
-					choro4 = L.geoJson(response, {
-						style: calculatePercents
-					})
-					choro4.addTo(map);
-					lastcensusmap = choro4;
-				}
-				else if (i == 5) {
-					choro5 = L.geoJson(response, {
-						style: calculatePercents
-					})
-					choro5.addTo(map);
-					lastcensusmap = choro5;
-				}
-				else if (i == 6) {
-					choro6 = L.geoJson(response, {
-						style: calculatePercents
-					})
-					choro6.addTo(map);
-					lastcensusmap = choro6;
-				}
-				if (lastcensusmap) {
-					lastcensusmap.bringToBack();
-				}
-				if (lastpointmap) {
-					lastpointmap.bringToFront();
-				}
-				loadStop();
-				grades.forEach(makegrade)
 			}
 		)
 	}
@@ -750,12 +783,14 @@ function doCensusMap(i, lat, long, bas, val, addval1, addval2, addval3, title, s
 function checkYears(values, handle, unencoded, tap, positions, noUiSlider) {
 	yearsActive = values
 	map.closePopup();
-	if (transon == type_ped) {
+	if (transon == type_ped | transon == type_bike) {
 		pointcoords_ped = []; pointcoords_ped_heat = []; countbyyear_ped = [];
+		pointcoords_bike = []; pointcoords_bike_heat = []; countbyyear_bike = [];
+	}
+	if (transon == type_ped) {
 		switchMap(type_crashes, type_ped);
 	}
 	else if (transon == type_bike) {
-		pointcoords_bike = []; pointcoords_bike_heat = []; countbyyear_bike = [];
 		switchMap(type_crashes, type_bike);
 	}
 }
@@ -770,7 +805,12 @@ function invertSeverityValues(x) {
 }
 
 function checkSeverity(values, handle, unencoded, tap, positions, noUiSlider) {
-	newValues = [invertSeverityValues(values[1]), invertSeverityValues(values[0])]
+	if (invertSeverity) {
+		newValues = [invertSeverityValues(values[1]), invertSeverityValues(values[0])]
+	}
+	else {
+		newValues = [values[0], values[1]]
+	}
 	severityActive = newValues
 	map.closePopup();
 	if (transon == type_ped) {
@@ -785,62 +825,72 @@ function checkSeverity(values, handle, unencoded, tap, positions, noUiSlider) {
 
 //CREATE CHARTS
 function doChart(countsByYear, whichYears, label) {
-	if (lineChart) {
-		lineChart.destroy();
-	}
-	yearsToDisplay = []
-	countsToDisplay = []
-	for (i = 0; i < years.length; i++) {
-		if (years[i] >= whichYears[0] & years[i] <= whichYears[1]) {
-			yearsToDisplay.push(years[i])
-			countsToDisplay.push(countsByYear[i])
+	if (showTrends) {
+		if (lineChart) {
+			lineChart.destroy();
 		}
-	}
-	lineChart = new Chart(document.getElementById("line-chart"), {
-		type: 'line',
-		data: {
-			labels: yearsToDisplay,
-			datasets: [{
-				data: countsToDisplay,
-				label: label,
-				borderColor: "#3e95cd",
-				fill: false,
-				legend: {
-					position: "left",
+		yearsToDisplay = []
+		countsToDisplay = []
+		toSum = 0
+		toDiv = 0
+		for (i = 0; i < years.length; i++) {
+			if (years[i] >= whichYears[0] & years[i] <= whichYears[1]) {
+				yearsToDisplay.push(years[i])
+				if (!omitFinalYearFromTrends | (omitFinalYearFromTrends & i < (years.length - 1))) {
+					countsToDisplay.push(countsByYear[i])
 				}
-			},
-			]
-		},
-		options: {
-			maintainaspectratio: false,
-			responsive: false,
-			title: {
-				display: false,
-				text: 'Traffic Crash Trend (Current Settings)'
-			},
-			legend: {
-				display: false
-			},
-			scales: {
-				yAxes: [{
-					display: true,
-					ticks: {
-						maxTicksLimit: 4,
-						fontSize: 10,
-						fontColor: 'black',
-						//	suggestedMin: 0,
-					}
-				}],
-				xAxes: [{
-					display: true,
-					ticks: {
-						fontSize: 10,
-						fontColor: 'black',
-					}
-				}]
+				toSum += countsByYear[i]
+				toDiv += 1
 			}
 		}
-	});
+		suggestedMin = toSum / toDiv
+		lineChart = new Chart(document.getElementById("line-chart"), {
+			type: 'line',
+			data: {
+				labels: yearsToDisplay,
+				datasets: [{
+					data: countsToDisplay,
+					label: label,
+					borderColor: "#3e95cd",
+					fill: false,
+					legend: {
+						position: "left",
+					}
+				},
+				]
+			},
+			options: {
+				maintainaspectratio: false,
+				responsive: false,
+				title: {
+					display: false,
+					text: 'Crash Trend (Current Settings)'
+				},
+				legend: {
+					display: false
+				},
+				scales: {
+					yAxes: [{
+						display: true,
+						ticks: {
+							maxTicksLimit: 4,
+							fontSize: 10,
+							fontColor: 'black',
+							suggestedMin: (suggestedMin * .66),
+							suggestedMax: (suggestedMin * 1.33),
+						},
+					}],
+					xAxes: [{
+						display: true,
+						ticks: {
+							fontSize: 10,
+							fontColor: 'black',
+						}
+					}]
+				}
+			}
+		});
+	}
 }
 
 //ASSIGN EVENTS
@@ -865,9 +915,9 @@ document.getElementById('commButton').addEventListener("click", function () { ch
 function setTitles() {
 	document.title = localeLongName + " Crash Data Explorer";
 	document.getElementById('mainTitleName').innerHTML = localeLongName;
-	document.getElementById('aboutTitleName').innerHTML = localeLongName;
-	document.getElementById('statsPanelName').innerHTML = localeLongName;
-	document.getElementById('overlayDescription').innerHTML = aboutDescription;
+	document.getElementById('aboutTitleName').innerHTML = localeShortName;
+	document.getElementById('overlayIntroDescription').innerHTML = introDescription;
+	document.getElementById('overlayAboutDescription').innerHTML = aboutDescription;
 }
 
 function setSliders() {
@@ -901,42 +951,6 @@ function setSliders() {
 	slider2.noUiSlider.on('set', checkSeverity);
 }
 
-function setStats() {
-	timeString = "";
-	listsString = ""
-	for (var key in CityStats) {
-		if (CityStats.hasOwnProperty(key)) {
-			var val = CityStats[key];
-			if (key == "timeframe") {
-				timeString = val
-			}
-			if (key == "lists") {
-				for (i = 0; i < val.length; i++) {
-					listsString += '<div class="statSubcontain">' + val[i]['title'] + '<ul class="statList">';
-					for (z = 0; z < val[i]['items'].length; z++) {
-						listsString += '<li>' + val[i]['items'][z]['name'] + ': ' + val[i]['items'][z]['count'] + '</li>';
-					}
-					listsString += '</ul></div>';
-				}
-			}
-		}
-	}
-	document.getElementById('statContain').innerHTML = listsString;
-	document.getElementById('statPanel').style.display = "block"
-}
-
-function setAdvocacy() {
-	var linkstring = "<ul>";
-	for (i = 0; i < advocacyLinks.length; i++) {
-		linkstring += "<li>";
-		linkstring += advocacyLinks[i];
-		linkstring += "</li>";
-	}
-	linkstring += "</ul>";
-	document.getElementById('linkList').innerHTML = linkstring;
-	document.getElementById('advocatePanel').style.display = 'block';
-}
-
 function setSourceNotes() {
 	var linkstring = "<ul>";
 	for (i = 0; i < sourcesNotes.length; i++) {
@@ -963,11 +977,8 @@ function setDevNotes() {
 //INIT
 setTitles();
 showBasemap();
-if (showStats) {
-	setStats();
-}
-if (showAdvocacy) {
-	setAdvocacy();
+if (showTrends) {
+	document.getElementById('showBlockChart').style.display = "block"
 }
 setSourceNotes();
 setDevNotes();
@@ -975,3 +986,4 @@ setSliders();
 
 //Show ped crashes on open
 manageButtonState(type_crashes, type_ped)
+
