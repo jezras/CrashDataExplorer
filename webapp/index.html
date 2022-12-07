@@ -13,7 +13,7 @@
   <!--[if lte IE 8]>
     <link rel="stylesheet" href="node_modules/leaflet/dist/leaflet.ie.css" />
   <![endif]-->
-  <link rel="stylesheet" href="./css/style.css?1008">
+  <link rel="stylesheet" href="./css/style.css?1010">
 
 </head>
 
@@ -119,7 +119,20 @@
             </div>
           </div>
           <div class="blockChart" id="showBlockChart">
+            <div id="linkChart" class="linkChart"></div>
             <canvas id="line-chart" width="422px" height=120px></canvas>
+          </div>
+          <div class="blockClick">
+            <div class="titleClick">
+              <div class="choiceTitle"><span style="color:#CE1126">View</span> conditions through aerials and street
+                views
+                <div class="tooltip">(?)<span class="tooltiptext">Click on crashes for links to street
+                    views</span></div>
+              </div>
+              <div class="buttonRowCommunity">
+                <label><input type="checkbox" id="aeriButton">Aerial Tiles</input></label>
+              </div>
+            </div>
           </div>
           <div class="blockCommunity">
             <div class="titleCommunity">
@@ -133,17 +146,8 @@
             <div class="legendNavCommunity">
               <div class="navigationCommunity">
                 <div class="buttonRowCommunity">
-                  <label><input type="checkbox" id="commButton"> Show Community Boundaries</input></label>
+                  <label><input type="checkbox" id="commButton">Community Boundaries</input></label>
                 </div>
-              </div>
-            </div>
-          </div>
-          <div class="blockClick">
-            <div class="titleClick">
-              <div class="choiceTitle"><span style="color:#CE1126">Click</span> markers for details and street view
-                links <div class="tooltip">(?)<span class="tooltiptext">Use street views to consider how a
-                    place
-                    could be made safer</span></div>
               </div>
             </div>
           </div>
@@ -175,6 +179,30 @@
         </div>
       </div>
     </div>
+    <div class="containerRight">
+      <div class="rankHeader">
+        How dangerous are</br>streets in <span id="rankName">Columbus</span>?
+      </div>
+      <div class="rankBox">
+        <div class="rankTitle">Fatal Crash Rates</br><span class="rankSubTitle">Per 100K Population, All Years
+            Avg.</span>
+        </div>
+        <div style="width:105px; margin:5px; float:left">Pedestrian</div>
+        <div style="width:105px; margin:5px; float:left">Cyclist</div>
+        <div id="PedFatalRate" class="rankRate"></div>
+        <div id="BikeFatalRate" class="rankRate"></div>
+      </div>
+      <div class="rankBox">
+        <div class="rankTitle">KSI Crash Rates <span style="font-size:11px"></span></br><span class="rankSubTitle">Per
+            100K
+            Population, All Years Avg.</span>
+        </div>
+        <div style="width:105px; margin:5px; float:left">Pedestrian</div>
+        <div style="width:105px; margin:5px; float:left">Cyclist</div>
+        <div id="PedKSIRate" class="rankRate"></div>
+        <div id="BikeKSIRate" class="rankRate"></div>
+      </div>
+    </div>
   </div>
 
 
@@ -185,14 +213,16 @@
   <script src="./js/ext/citysdk.js?1001"></script>
   <script src="./js/ext/nouislider.js"></script>
   <script src="./js/ext/Chart.min.js"></script>
+  <script src="./js/ext/moment.js"></script>
+  <script src="./js/ext/chartjs-adapter-moment.js"></script>
   <!---LOAD REQUIRED DATA-->
-  <script src="./data/cde_ped.js?1001"></script>
-  <script src="./data/cde_bike.js?1001"></script>
+  <script src="./data/cde_ped.js?1002"></script>
+  <script src="./data/cde_bike.js?1002"></script>
   <script src="./data/cde_comms.js"></script>
   <!---LOAD CITY CONFIG FILE-->
-  <script src="./js/config.js?1002"></script>
+  <script src="./js/config.js?1005"></script>
   <!---LOAD APP LOGIC-->
-  <script src="./js/main.js?1010"></script>
+  <script type="module" src="./js/main.js?1013"></script>
 
 </body>
 

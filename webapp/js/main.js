@@ -39,8 +39,13 @@ var pointcoords_bike = [];
 var pointcoords_bike_heat = [];
 var countbyyear_ped = [];
 var countbyyear_bike = [];
-var yearsActive = [years[0], years[years.length - 1]];
-var severityActive = [severity[0], severity[severity.length - 1]];;
+var countbyyearmonth_ped = [];
+var countbyyearmonth_bike = [];
+var yearsActive = [yearsDefault[0], yearsDefault[yearsDefault.length - 1]];
+var severityActive = [severityDefault[0], severityDefault[severityDefault.length - 1]];
+if (invertSeverity) {
+	severityActive = [invertSeverityValues(severityDefault[severityDefault.length - 1]), invertSeverityValues(severityDefault[0])];
+}
 var basemap = null;
 var basemapon = false;
 var transon = "none";
@@ -48,10 +53,13 @@ var demoon = 0;
 var hasHeat = 0;
 var checkedHeat = true;
 var checkedMarker = true;
-var checkedCommunity = true;
+var checkedCommunity = false;
+var checkedAerial = false;
 var lineChart = null;
 var currentCrashesTitle = "";
 var currentCrashesCount = "";
+var tileModeAerial = true
+var chartModeMonths = monthlyTrends
 
 //OVERLAYS
 function openInfoOverlay() {
@@ -87,7 +95,7 @@ else if (showOverlayOnLaunch) {
 
 //INITIALIZE MAP
 var map = L.map('map', {
-	scrollWheelZoom: false, minZoom: 10, maxZoom: 14
+	scrollWheelZoom: false, minZoom: 10, maxZoom: 17
 });
 // set the position and zoom level of the map
 map.setView([centerLat, centerLong], 11);
@@ -111,6 +119,11 @@ function checkMarkers() {
 function checkCommunity() {
 	checkedCommunity = document.getElementById('commButton').checked
 	showCommunities()
+}
+
+function checkAerial() {
+	checkedAerial = document.getElementById('aeriButton').checked
+	toggleBasemap()
 }
 
 function loadStart() {
@@ -271,10 +284,18 @@ function switchMap(type, num) {
 		}
 		if (num == type_ped) {
 			coords_length = pointcoords_ped.length
-			for (i = 0; i < years.length; i++) {
-				countbyyear_ped.push(0)
+			if (coords_length == 0) {
+				countbyyear_ped = []
+				countbyyearmonth_ped = []
+				for (i = 0; i < years.length; i++) {
+					countbyyear_ped[years[i] + "-"] = 0
+					for (k = 1; k < 13; k++) {
+						countbyyearmonth_ped[years[i] + "-" + k] = 0
+					}
+
+				}
 			}
-			currentCrashesTitle = "Pedestrian-Involved Crashes in " + localeTechnicalName;
+			currentCrashesTitle = "Pedestrian Crashes in " + localeTechnicalName;
 			legend = '<div class="dot1"></div> Pedestrian Crash';
 			point1 = L.geoJson(eval(pedgeo), {
 				pointToLayer: function (feature, latlng) {
@@ -285,24 +306,24 @@ function switchMap(type, num) {
 				onEachFeature: function (feature, layer) {
 					if (compareAgainstSettings(feature)) {
 						if (coords_length == 0) {
+							tempSeverity = feature.properties.severity
 							if (invertSeverity) {
-								topush = [feature.geometry.coordinates[1], feature.geometry.coordinates[0], (invertSeverityValues(feature.properties.severity) * 20) / 100, feature.properties.year]
+								tempSeverity = invertSeverityValues(feature.properties.severity)
 							}
-							else {
-								topush = [feature.geometry.coordinates[1], feature.geometry.coordinates[0], (feature.properties.severity * 20) / 100, feature.properties.year]
-							}
+							topush = [feature.geometry.coordinates[1], feature.geometry.coordinates[0], (tempSeverity * 20) / 100, feature.properties.year, feature.properties.month]
 							pointcoords_ped.push(topush);
 							pointcoords_ped_heat.push(topush.slice(0, 3))
-							yeartoindex = feature.properties.year - years[0]
-							countbyyear_ped[yeartoindex]++;
+							countbyyear_ped[feature.properties.year + "-"]++;
+							yearmonth = ((feature.properties.year) + "-" + feature.properties.month)
+							countbyyearmonth_ped[yearmonth]++;
 						}
 						layer.bindPopup(
 							'<span class=popuptitle>Crash Detail</span>' +
-							'<ul><li><span class="listlabel">Type</span>: Pedestrian-Involved</li>' +
+							'<ul><li><span class="listlabel">Type</span>: Pedestrian</li>' +
 							'<li><span class="listlabel">Year</span>: ' + feature.properties.year + '</li>' +
 							'<li><span class="listlabel">Road</span>: ' + new String(feature.properties.road).toUpperCase() + '</li>' +
 							'<li><span class="listlabel">Lanes</span>: ' + feature.properties.lanes + '</li>' +
-							'<li><span class="listlabel">Injury</span>: ' + injuryLabels[parseInt(feature.properties.severity) - 1] + '</li>' +
+							'<li><span class="listlabel">Injury</span>: ' + injuryLabels[parseInt(tempSeverity) - 1] + '</li>' +
 							//'<li><span class="listlabel">Speed Limit</span>: ' + getNumber(feature.properties.drv_posted_nbr) + '</li>' +
 							'<li><a target="_blank" href="' + getStreetViewURL(feature.geometry.coordinates[1], feature.geometry.coordinates[0]) + '">Launch Street View in New Tab</a></li></ul>'
 						);
@@ -317,14 +338,27 @@ function switchMap(type, num) {
 			if (checkedHeat) {
 				showHeatMap();
 			}
-			doChart(countbyyear_ped, yearsActive, "Pedestrian Crashes")
+			if (chartModeMonths) {
+				doChart(countbyyearmonth_ped, yearsActive, "Pedestrian Crashes")
+			}
+			else {
+				doChart(countbyyear_ped, yearsActive, "Pedestrian Crashes")
+			}
+
 		}
 		else if (num == type_bike) {
 			coords_length = pointcoords_bike.length
-			for (i = 0; i < years.length; i++) {
-				countbyyear_bike.push(0)
+			if (coords_length == 0) {
+				countbyyear_bike = []
+				countbyyearmonth_bike = []
+				for (i = 0; i < years.length; i++) {
+					countbyyear_bike[years[i] + "-"] = 0
+					for (k = 1; k < 13; k++) {
+						countbyyearmonth_bike[years[i] + "-" + k] = 0
+					}
+				}
 			}
-			currentCrashesTitle = "Cyclist-Involved Crashes in " + localeTechnicalName;
+			currentCrashesTitle = "Cyclist Crashes in " + localeTechnicalName;
 			legend = '<div class="dot2"></div> Cyclist Crash';
 			point2 = L.geoJson(eval(bikegeo), {
 				pointToLayer: function (feature, latlng) {
@@ -335,24 +369,24 @@ function switchMap(type, num) {
 				onEachFeature: function (feature, layer) {
 					if (compareAgainstSettings(feature)) {
 						if (coords_length == 0) {
+							tempSeverity = feature.properties.severity
 							if (invertSeverity) {
-								topush = [feature.geometry.coordinates[1], feature.geometry.coordinates[0], (invertSeverityValues(feature.properties.severity) * 20) / 100, feature.properties.year]
+								tempSeverity = invertSeverityValues(feature.properties.severity)
 							}
-							else {
-								topush = [feature.geometry.coordinates[1], feature.geometry.coordinates[0], (feature.properties.severity * 20) / 100, feature.properties.year]
-							}
+							topush = [feature.geometry.coordinates[1], feature.geometry.coordinates[0], (tempSeverity * 20) / 100, feature.properties.year, feature.properties.month]
 							pointcoords_bike.push(topush);
 							pointcoords_bike_heat.push(topush.slice(0, 3))
-							yeartoindex = feature.properties.year - years[0]
-							countbyyear_bike[yeartoindex]++;
+							countbyyear_bike[feature.properties.year + "-"]++;
+							yearmonth = ((feature.properties.year) + "-" + feature.properties.month)
+							countbyyearmonth_bike[yearmonth]++;
 						}
 						layer.bindPopup(
 							'<span class=popuptitle>Crash Detail</span>' +
-							'<ul><li><span class="listlabel">Type</span>: Cyclist-Involved</li>' +
+							'<ul><li><span class="listlabel">Type</span>: Cyclist</li>' +
 							'<li><span class="listlabel">Year</span>: ' + feature.properties.year + '</li>' +
 							'<li><span class="listlabel">Road</span>: ' + new String(feature.properties.road).toUpperCase() + '</li>' +
 							'<li><span class="listlabel">Lanes</span>: ' + feature.properties.lanes + '</li>' +
-							'<li><span class="listlabel">Injury</span>: ' + injuryLabels[parseInt(feature.properties.severity) - 1] + '</li>' +
+							'<li><span class="listlabel">Injury</span>: ' + injuryLabels[parseInt(tempSeverity) - 1] + '</li>' +
 							//'<li><span class="listlabel">Speed Limit: ' + getNumber(feature.properties.drv_posted_nbr) + '</li>' +
 							'<li><a target="_blank" href="' + getStreetViewURL(feature.geometry.coordinates[1], feature.geometry.coordinates[0]) + '">Launch Street View in New Tab</a></li></ul>'
 						);
@@ -367,19 +401,20 @@ function switchMap(type, num) {
 			if (checkedHeat) {
 				showHeatMap();
 			}
-			doChart(countbyyear_bike, yearsActive, "Cyclist Crashes")
+			if (chartModeMonths) {
+				doChart(countbyyearmonth_bike, yearsActive, "Cyclist Crashes")
+			}
+			else {
+				doChart(countbyyear_bike, yearsActive, "Cyclist Crashes")
+			}
 		}
 		document.getElementById("titleCrashes").innerHTML = currentCrashesTitle;
-		currentCrashesCount = " (found " + countTot + " crashes matching these settings)";
+		currentCrashesCount = ' (found ' + countTot + ' crashes matching these settings: <a style="text-decoration:none" href="javascript:exportToCSV()">export csv</a>)';
 		document.getElementById("countCrashes").innerHTML = currentCrashesCount
 		document.getElementById("legendCrashes").innerHTML = legend;
 		document.getElementById("labelCrashes").style.display = "block";
 		loadStop();
 	}
-}
-
-for (i = 0; i < years.length; i++) {
-	countbyyear_ped.push(0)
 }
 
 function countPointsInPolygon(pointcoords, polygon) {
@@ -388,8 +423,12 @@ function countPointsInPolygon(pointcoords, polygon) {
 	var thiscount = 0
 	var thiscountfs = 0
 	var countbyyear_temp = []
+	var countbyyearmonth_temp = []
 	for (i = 0; i < years.length; i++) {
-		countbyyear_temp.push(0)
+		countbyyear_temp[years[i] + "-"] = 0
+		for (k = 1; k < 13; k++) {
+			countbyyearmonth_temp[years[i] + "-" + k] = 0
+		}
 	}
 	if (lastpointmap || lastheatmap) {
 		for (i = 1; i < pointcoords.length; i++) {
@@ -399,12 +438,17 @@ function countPointsInPolygon(pointcoords, polygon) {
 				if (pointcoords[i][2] >= 0.8) {
 					thiscountfs++
 				}
-				yeartoindex = pointcoords[i][3] - years[0]
-				countbyyear_temp[yeartoindex]++;
+				countbyyear_temp[pointcoords[i][3] + "-"]++;
+				yearmonth = ((pointcoords[i][3]) + "-" + pointcoords[i][4])
+				countbyyearmonth_temp[yearmonth]++;
 			}
 		}
 	}
-	var returnArray = [thiscount, thiscountfs, totalcount, countbyyear_temp]
+	var timecount = countbyyear_temp
+	if (chartModeMonths) {
+		timecount = countbyyearmonth_temp
+	}
+	var returnArray = [thiscount, thiscountfs, totalcount, timecount]
 	loadStop();
 	return returnArray;
 }
@@ -446,9 +490,14 @@ function showCommunities() {
 						document.getElementById('ccount' + feature.properties.OBJECTID).innerHTML += "</br>" + Math.round((count[1] / count[0]) * 100) + "% are severe or fatal";
 					}
 					document.getElementById('ccount' + feature.properties.OBJECTID).innerHTML += "</br></br>This community has " + formatPercent(count[0], count[2]) + " of all crashes matching these settings";
-					doChart(count[3], yearsActive, "Pedestrian Crashes")
+					if (chartModeMonths) {
+						doChart(count[3], yearsActive, "Pedestrian Crashes")
+					}
+					else {
+						doChart(count[3], yearsActive, "Pedestrian Crashes")
+					}
 					if (showTrends) {
-						document.getElementById("titleCrashes").innerHTML = "Pedestrian-Involved Crashes in " + feature.properties.AREA_NAME.toUpperCase()
+						document.getElementById("titleCrashes").innerHTML = "Pedestrian Crashes in " + feature.properties.AREA_NAME.toUpperCase()
 					}
 					else {
 						document.getElementById("titleCrashes").innerHTML = ""
@@ -459,7 +508,12 @@ function showCommunities() {
 			});
 			poly1.on('popupclose', function (e) {
 				e.propagatedFrom.setStyle(polyCommunityStyle);
-				doChart(countbyyear_ped, yearsActive, "Pedestrian Crashes");
+				if (chartModeMonths) {
+					doChart(countbyyearmonth_ped, yearsActive, "Pedestrian Crashes")
+				}
+				else {
+					doChart(countbyyear_ped, yearsActive, "Pedestrian Crashes")
+				}
 				document.getElementById("titleCrashes").innerHTML = currentCrashesTitle;
 				document.getElementById("countCrashes").innerHTML = currentCrashesCount;
 			});
@@ -475,15 +529,25 @@ function showCommunities() {
 						document.getElementById('ccount' + feature.properties.OBJECTID).innerHTML += "</br>" + Math.round((count[1] / count[0]) * 100) + "% are severe or fatal";
 					}
 					document.getElementById('ccount' + feature.properties.OBJECTID).innerHTML += "</br></br>This community has " + formatPercent(count[0], count[2]) + " of all crashes matching these settings";
-					doChart(count[3], yearsActive, "Cyclist Crashes")
-					document.getElementById("titleCrashes").innerHTML = "Cyclist-Involved Crashes in " + feature.properties.AREA_NAME.toUpperCase()
+					if (chartModeMonths) {
+						doChart(count[3], yearsActive, "Cyclist Crashes")
+					}
+					else {
+						doChart(count[3], yearsActive, "Cyclist Crashes")
+					}
+					document.getElementById("titleCrashes").innerHTML = "Cyclist Crashes in " + feature.properties.AREA_NAME.toUpperCase()
 					document.getElementById("countCrashes").innerHTML = "";
 				}
 				e.propagatedFrom.setStyle(polyCommunityHighlightStyle);
 			});
 			poly1.on('popupclose', function (e) {
 				e.propagatedFrom.setStyle(polyCommunityStyle);
-				doChart(countbyyear_bike, yearsActive, "Cyclist Crashes")
+				if (chartModeMonths) {
+					doChart(countbyyearmonth_bike, yearsActive, "Cyclist Crashes")
+				}
+				else {
+					doChart(countbyyear_bike, yearsActive, "Cyclist Crashes")
+				}
 				document.getElementById("titleCrashes").innerHTML = currentCrashesTitle;
 				document.getElementById("countCrashes").innerHTML = currentCrashesCount;
 			});
@@ -512,21 +576,23 @@ function showCommunities() {
 	}
 }
 
-function showBasemap() {
-	if (!basemap) {
-		basemap = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-			id: 'mapbox.light',
-			attribution: mapAttribution
-		});
-	}
-	if (!basemapon) {
-		basemap.addTo(map);
-		basemapon = true;
-	}
-	else {
+function toggleBasemap() {
+	if (basemap) {
 		map.removeLayer(basemap);
 		basemapon = false;
 	}
+	mbAttribution = "OpenStreetMap; " + mapAttribution
+	mbUrl = 'https://{s}.tile.osm.org/{z}/{x}/{y}.png'
+	if (checkedAerial) {
+		mbAttribution = "ESRI; " + mapAttribution
+		mbUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+	}
+	basemap = L.tileLayer(mbUrl, {
+		id: 'mapbox.light',
+		attribution: mbAttribution
+	});
+	basemap.addTo(map);
+	basemapon = true;
 }
 
 function showHeatMap() {
@@ -695,82 +761,90 @@ function doCensusMap(i, lat, long, bas, val, addval1, addval2, addval3, title, s
 		if (addval3) {
 			valArray[4] = addval3
 		}
-		census({
-			"vintage": censusAcsYear,
-			geoHierarchy: {
-				// required
-				state: censusStateFips,
-				county: censusCountyFips,
-				tract: "*"
+		if (censusDown) {
+			document.getElementById("legendCensus").innerHTML = "ERROR";
+			document.getElementById("labelCensus").style.display = "none";
+			document.getElementById("navigationDemo").innerHTML = "The Census API is unavailable right now. We apologize for the inconvenience, and are working on bringing this feature back.";
+			loadStop();
+		}
+		else {
+			census({
+				"vintage": censusAcsYear,
+				geoHierarchy: {
+					// required
+					state: censusStateFips,
+					county: censusCountyFips,
+					tract: "*"
+				},
+				sourcePath: ["acs", "acs5"],
+				"values": valArray,
+				"statsKey": censusAccessToken,
+				"geoResolution": "500k"
 			},
-			sourcePath: ["acs", "acs5"],
-			"values": valArray,
-			"statsKey": censusAccessToken,
-			"geoResolution": "500k"
-		},
-			function (error, response) {
-				if (error) {
-					document.getElementById("legendCensus").innerHTML = "ERROR";
-					document.getElementById("labelCensus").style.display = "none";
-					document.getElementById("navigationDemo").innerHTML = "The Census API is unavailable right now. We apologize for the inconvenience.";
-					loadStop();
+				function (error, response) {
+					if (error) {
+						document.getElementById("legendCensus").innerHTML = "ERROR";
+						document.getElementById("labelCensus").style.display = "none";
+						document.getElementById("navigationDemo").innerHTML = "The Census API is unavailable right now. We apologize for the inconvenience.";
+						loadStop();
+					}
+					else {
+						console.log(response)
+						document.getElementById("legendCensus").innerHTML = "";
+						if (i == 1) {
+							choro1 = L.geoJson(response, {
+								style: calculatePercents
+							})
+							choro1.addTo(map);
+							lastcensusmap = choro1;
+						}
+						else if (i == 2) {
+							choro2 = L.geoJson(response, {
+								style: calculatePercents
+							})
+							choro2.addTo(map);
+							lastcensusmap = choro2;
+						}
+						else if (i == 3) {
+							choro3 = L.geoJson(response, {
+								style: calculatePercents
+							})
+							choro3.addTo(map);
+							lastcensusmap = choro3;
+						}
+						else if (i == 4) {
+							choro4 = L.geoJson(response, {
+								style: calculatePercents
+							})
+							choro4.addTo(map);
+							lastcensusmap = choro4;
+						}
+						else if (i == 5) {
+							choro5 = L.geoJson(response, {
+								style: calculatePercents
+							})
+							choro5.addTo(map);
+							lastcensusmap = choro5;
+						}
+						else if (i == 6) {
+							choro6 = L.geoJson(response, {
+								style: calculatePercents
+							})
+							choro6.addTo(map);
+							lastcensusmap = choro6;
+						}
+						if (lastcensusmap) {
+							lastcensusmap.bringToBack();
+						}
+						if (lastpointmap) {
+							lastpointmap.bringToFront();
+						}
+						loadStop();
+						grades.forEach(makegrade)
+					}
 				}
-				else {
-					console.log(response)
-					document.getElementById("legendCensus").innerHTML = "";
-					if (i == 1) {
-						choro1 = L.geoJson(response, {
-							style: calculatePercents
-						})
-						choro1.addTo(map);
-						lastcensusmap = choro1;
-					}
-					else if (i == 2) {
-						choro2 = L.geoJson(response, {
-							style: calculatePercents
-						})
-						choro2.addTo(map);
-						lastcensusmap = choro2;
-					}
-					else if (i == 3) {
-						choro3 = L.geoJson(response, {
-							style: calculatePercents
-						})
-						choro3.addTo(map);
-						lastcensusmap = choro3;
-					}
-					else if (i == 4) {
-						choro4 = L.geoJson(response, {
-							style: calculatePercents
-						})
-						choro4.addTo(map);
-						lastcensusmap = choro4;
-					}
-					else if (i == 5) {
-						choro5 = L.geoJson(response, {
-							style: calculatePercents
-						})
-						choro5.addTo(map);
-						lastcensusmap = choro5;
-					}
-					else if (i == 6) {
-						choro6 = L.geoJson(response, {
-							style: calculatePercents
-						})
-						choro6.addTo(map);
-						lastcensusmap = choro6;
-					}
-					if (lastcensusmap) {
-						lastcensusmap.bringToBack();
-					}
-					if (lastpointmap) {
-						lastpointmap.bringToFront();
-					}
-					loadStop();
-					grades.forEach(makegrade)
-				}
-			}
-		)
+			)
+		}
 	}
 	if (lastcensusmap) {
 		lastcensusmap.bringToBack();
@@ -784,8 +858,8 @@ function checkYears(values, handle, unencoded, tap, positions, noUiSlider) {
 	yearsActive = values
 	map.closePopup();
 	if (transon == type_ped | transon == type_bike) {
-		pointcoords_ped = []; pointcoords_ped_heat = []; countbyyear_ped = [];
-		pointcoords_bike = []; pointcoords_bike_heat = []; countbyyear_bike = [];
+		pointcoords_ped = []; pointcoords_ped_heat = []; countbyyear_ped = []; countbyyearmonth_ped = [];
+		pointcoords_bike = []; pointcoords_bike_heat = []; countbyyear_bike = []; countbyyearmonth_bike = []
 	}
 	if (transon == type_ped) {
 		switchMap(type_crashes, type_ped);
@@ -804,6 +878,19 @@ function invertSeverityValues(x) {
 	else { return x }
 }
 
+function getSeverityLabel(x) {
+	if (invertSeverity) {
+		x = invertSeverityValues(x);
+	}
+	if (x == 1) { return "Property Damage" }
+	else if (x == 2) { return "Possible Injury" }
+	else if (x == 3) { return "Non-Incapacitating Injury" }
+	else if (x == 4) { return "Incapacitating Injury" }
+	else if (x == 5) { return "Fatal" }
+	else { return x }
+}
+
+
 function checkSeverity(values, handle, unencoded, tap, positions, noUiSlider) {
 	if (invertSeverity) {
 		newValues = [invertSeverityValues(values[1]), invertSeverityValues(values[0])]
@@ -814,40 +901,98 @@ function checkSeverity(values, handle, unencoded, tap, positions, noUiSlider) {
 	severityActive = newValues
 	map.closePopup();
 	if (transon == type_ped) {
-		pointcoords_ped = []; pointcoords_ped_heat = []; countbyyear_ped = [];
+		pointcoords_ped = []; pointcoords_ped_heat = []; countbyyear_ped = []; countbyyearmonth_ped = [];
 		switchMap(type_crashes, type_ped);
 	}
 	else if (transon == type_bike) {
-		pointcoords_bike = []; pointcoords_bike_heat = []; countbyyear_bike = [];
+		pointcoords_bike = []; pointcoords_bike_heat = []; countbyyear_bike = []; countbyyearmonth_bike = [];
 		switchMap(type_crashes, type_bike);
 	}
 }
 
+function switchChartMode() {
+	map.closePopup();
+	if (chartModeMonths) {
+		chartModeMonths = false
+		if (transon == type_ped) {
+			doChart(countbyyear_ped, yearsActive, "Pedestrian Crashes")
+		}
+		else if (transon == type_bike) {
+			doChart(countbyyear_bike, yearsActive, "Cyclist Crashes")
+		}
+		document.getElementById('linkChart').innerHTML = '<a href="javascript:switchChartMode()">switch to month view &#9660; &nbsp;&nbsp;</a>';
+	}
+	else {
+		chartModeMonths = true
+		if (transon == type_ped) {
+			doChart(countbyyearmonth_ped, yearsActive, "Pedestrian Crashes")
+		}
+		else if (transon == type_bike) {
+			doChart(countbyyearmonth_bike, yearsActive, "Cyclist Crashes")
+		}
+		document.getElementById('linkChart').innerHTML = '<a href="javascript:switchChartMode()">switch to year view &#9660; &nbsp;&nbsp;</a>';
+	}
+}
+
+
 //CREATE CHARTS
-function doChart(countsByYear, whichYears, label) {
+function doChart(whichCounts, whichYears, label) {
 	if (showTrends) {
 		if (lineChart) {
 			lineChart.destroy();
 		}
-		yearsToDisplay = []
+		timeToDisplay_all = Object.keys(whichCounts)
+		countsToDisplay_all = Object.keys(whichCounts).map(k => whichCounts[k])
+		timeToDisplay = []
 		countsToDisplay = []
 		toSum = 0
 		toDiv = 0
-		for (i = 0; i < years.length; i++) {
-			if (years[i] >= whichYears[0] & years[i] <= whichYears[1]) {
-				yearsToDisplay.push(years[i])
-				if (!omitFinalYearFromTrends | (omitFinalYearFromTrends & i < (years.length - 1))) {
-					countsToDisplay.push(countsByYear[i])
+		for (i = 0; i < timeToDisplay_all.length; i++) {
+			thisyear = parseInt(timeToDisplay_all[i].substring(0, 4))
+			if (thisyear >= whichYears[0] & thisyear <= whichYears[1]) {
+				if (!chartModeMonths) {
+					timeToDisplay.push(thisyear)
 				}
-				toSum += countsByYear[i]
-				toDiv += 1
+				else {
+					timeToDisplay.push(timeToDisplay_all[i])
+				}
+				if (!omitFinalYearFromTrends | (omitFinalYearFromTrends & i < (years.length - 1))) {
+					countsToDisplay.push(whichCounts[timeToDisplay_all[i]])
+				}
 			}
 		}
-		suggestedMin = toSum / toDiv
+		if (chartModeMonths) {
+			xObject = {
+				type: 'time',
+				time: {
+					parser: 'YYYY-M',
+					unit: 'month',
+					displayFormats: {
+						month: 'YYYY-M'
+					}
+				},
+				display: true,
+				ticks: {
+					major: {
+						enabled: true
+					},
+				}
+			}
+		}
+		else {
+			xObject = {
+				display: true,
+				ticks: {
+					major: {
+						enabled: true
+					},
+				}
+			}
+		}
 		lineChart = new Chart(document.getElementById("line-chart"), {
 			type: 'line',
 			data: {
-				labels: yearsToDisplay,
+				labels: timeToDisplay,
 				datasets: [{
 					data: countsToDisplay,
 					label: label,
@@ -866,27 +1011,21 @@ function doChart(countsByYear, whichYears, label) {
 					display: false,
 					text: 'Crash Trend (Current Settings)'
 				},
-				legend: {
-					display: false
+				plugins: {
+					legend: {
+						display: false
+					},
 				},
 				scales: {
-					yAxes: [{
+					y: {
 						display: true,
 						ticks: {
-							maxTicksLimit: 4,
-							fontSize: 10,
-							fontColor: 'black',
-							suggestedMin: (suggestedMin * .66),
-							suggestedMax: (suggestedMin * 1.33),
+							major: {
+								enabled: true
+							},
 						},
-					}],
-					xAxes: [{
-						display: true,
-						ticks: {
-							fontSize: 10,
-							fontColor: 'black',
-						}
-					}]
+					},
+					x: xObject
 				}
 			}
 		});
@@ -910,12 +1049,21 @@ document.getElementById("linkHou").addEventListener("click", function () { manag
 document.getElementById('heatButton').addEventListener("click", function () { checkHeat() });
 document.getElementById('markerButton').addEventListener("click", function () { checkMarkers() });
 document.getElementById('commButton').addEventListener("click", function () { checkCommunity() });
+document.getElementById('aeriButton').addEventListener("click", function () { checkAerial() });
+if (chartModeMonths) {
+	document.getElementById('linkChart').innerHTML = '<a href="javascript:switchChartMode()">switch to year view &#9660; &nbsp;&nbsp;</a>';
+}
+else {
+	document.getElementById('linkChart').innerHTML = '<a href="javascript:switchChartMode()">switch to month view &#9660; &nbsp;&nbsp;</a>';
+}
+
 
 //INIT THE INTERFACE
 function setTitles() {
 	document.title = localeLongName + " Crash Data Explorer";
-	document.getElementById('mainTitleName').innerHTML = localeLongName;
-	document.getElementById('aboutTitleName').innerHTML = localeShortName;
+	document.getElementById('mainTitleName').innerHTML = localeLongName.toUpperCase();
+	document.getElementById('aboutTitleName').innerHTML = localeShortName.toUpperCase();
+	document.getElementById('overlayTitleName').innerHTML = localeShortName.toUpperCase();
 	document.getElementById('overlayIntroDescription').innerHTML = introDescription;
 	document.getElementById('overlayAboutDescription').innerHTML = aboutDescription;
 }
@@ -933,7 +1081,7 @@ function setSliders() {
 			values: years.length,
 			density: 50
 		},
-		start: [years[0], years[years.length - 1]],
+		start: [yearsDefault[0], yearsDefault[yearsDefault.length - 1]],
 		connect: true,
 	});
 	slider1.noUiSlider.on('set', checkYears);
@@ -945,7 +1093,7 @@ function setSliders() {
 			'max': severity[severity.length - 1]
 		},
 		step: 1,
-		start: [severity[0], severity[severity.length - 1]],
+		start: [severityDefault[0], severityDefault[severityDefault.length - 1]],
 		connect: true,
 	});
 	slider2.noUiSlider.on('set', checkSeverity);
@@ -976,7 +1124,7 @@ function setDevNotes() {
 
 //INIT
 setTitles();
-showBasemap();
+toggleBasemap();
 if (showTrends) {
 	document.getElementById('showBlockChart').style.display = "block"
 }
@@ -987,3 +1135,78 @@ setSliders();
 //Show ped crashes on open
 manageButtonState(type_crashes, type_ped)
 
+//Set fatal crash rates
+
+whichfatal = 5
+if (invertSeverity) { whichfatal = 1 }
+pedfatrate = ((((PedCrashes.features.filter(item => { return item.properties.severity == whichfatal })).length) / years.length) / population) * 100000
+bikefatrate = ((((BikeCrashes.features.filter(item => { return item.properties.severity == whichfatal })).length) / years.length) / population) * 100000
+document.getElementById('PedFatalRate').innerHTML = Math.round(pedfatrate * 10) / 10;
+document.getElementById('BikeFatalRate').innerHTML = Math.round(bikefatrate * 10) / 10;
+if (invertSeverity) {
+	pedksirate = ((((PedCrashes.features.filter(item => { return item.properties.severity < 3 })).length) / years.length) / population) * 100000
+	bikeksirate = ((((BikeCrashes.features.filter(item => { return item.properties.severity < 3 })).length) / years.length) / population) * 100000
+}
+else {
+	pedksirate = ((((PedCrashes.features.filter(item => { return item.properties.severity > 3 })).length) / years.length) / population) * 100000
+	bikeksirate = ((((BikeCrashes.features.filter(item => { return item.properties.severity > 3 })).length) / years.length) / population) * 100000
+}
+document.getElementById('PedKSIRate').innerHTML = Math.round(pedksirate * 10) / 10;
+document.getElementById('BikeKSIRate').innerHTML = Math.round(bikeksirate * 10) / 10;
+
+document.getElementById('rankName').innerHTML = localeShortName;
+
+function exportToCSV() {
+	filename = "cde_export";
+	csvString = "TYPE,"
+	keyWritten = 0
+	whichCrashes = PedCrashes
+	whichTypeString = "Pedestrian"
+	if (transon == type_bike) {
+		whichCrashes = BikeCrashes
+		whichTypeString = "Cyclist"
+	}
+	for (var i = 0; i < whichCrashes.features.length; i++) {
+		if (compareAgainstSettings(whichCrashes.features[i])) {
+			obj = whichCrashes.features[i].properties
+			k = 0
+			for (var key in obj) {
+				if (keyWritten == 0) {
+					csvString += key + ","
+					i = -1
+				}
+				else {
+					if (k == 0) {
+						csvString += whichTypeString + ","
+					}
+					csvString += obj[key] + ","
+				}
+				k++;
+			}
+			keyWritten = 1
+			if (i == -1) {
+				csvString += "severityString,"
+			}
+			else {
+				csvString += getSeverityLabel(obj["severity"]) + ","
+			}
+			csvString += "\r\n";
+		}
+	}
+	var blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+	if (navigator.msSaveBlob) { // IE 10+
+		navigator.msSaveBlob(blob, filename);
+	} else {
+		var link = document.createElement("a");
+		if (link.download !== undefined) { // feature detection
+			// Browsers that support HTML5 download attribute
+			var url = URL.createObjectURL(blob);
+			link.setAttribute("href", url);
+			link.setAttribute("download", filename);
+			link.style.visibility = 'hidden';
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+		}
+	}
+}

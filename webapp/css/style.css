@@ -25,16 +25,28 @@ li {
 /*
 OUTER FRAMING AND NAV
 */
-.container {
-  background-color: #fff;
-  height: 100%;
-  padding: 6px 12px 10px 12px;
-}
 
 .main {
-  width: 1078px;
+  width: 1338px;
   padding: 6px 5px 5px 5px;
   margin: auto;
+}
+
+.containerRight {
+  height: 100%;
+  width: 250px;
+  float: left;
+  background-color: #E6E6FA;
+  padding-bottom: 25px;
+  padding-top: 5px;
+}
+
+.container {
+  background-color: #eee;
+  height: 100%;
+  width: 1054px;
+  float: left;
+  padding: 6px 12px 10px 12px;
 }
 
 .mainTitle {
@@ -46,6 +58,50 @@ OUTER FRAMING AND NAV
   font-weight: bold;
   color: #000;
   padding-bottom: 4px;
+}
+
+.rankHeader {
+  float: left;
+  margin-top: 0px;
+  margin-left: 10px;
+  margin-bottom: 12px;
+  width: 230px;
+  font-size: 17px;
+  font-weight: bold;
+  color: #702963;
+}
+
+.rankBox {
+  float: left;
+  margin-top: 0px;
+  margin-left: 10px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  width: 230px;
+  background-color: #ccc;
+  font-size: 16px;
+}
+
+.rankTitle {
+  margin-left: 5px;
+  font-weight: bold;
+  text-align: left;
+  width: 220px;
+  border-bottom: 1px solid black
+}
+
+.rankSubTitle {
+  margin-left: 5px;
+  font-weight: bold;
+  text-align: left;
+  font-size: 12px;
+}
+
+.rankRate {
+  width: 75px;
+  margin: 0 20px 5px 20px;
+  float: left;
+  font-size: 18px;
 }
 
 .navRight {
@@ -133,7 +189,7 @@ RIGHT PANEL
 .blockTime {
   display: block;
   width: 412px;
-  height: 70px;
+  height: 66px;
   padding: 2px 2px 2px 8px;
   border-bottom: 1px solid #333;
   background-color: #FFF;
@@ -165,7 +221,7 @@ RIGHT PANEL
 .blockTrans {
   display: block;
   width: 412px;
-  height: 164px;
+  height: 157px;
   padding: 2px 2px 2px 8px;
   background-color: #FFF;
 }
@@ -202,10 +258,11 @@ RIGHT PANEL
 
 .blockClick {
   display: block;
-  height: 30px;
+  height: 42px;
   width: 412px;
   padding: 2px 2px 2px 8px;
   border-bottom: 1px solid #333;
+  border-top: 1px solid #000;
   background-color: #FFF;
 }
 
@@ -218,7 +275,7 @@ RIGHT PANEL
 .blockDemo {
   display: block;
   width: 412px;
-  height: 141px;
+  height: 136px;
   padding: 2px 2px 2px 8px;
   border-bottom: 1px solid #333;
   background-color: #FFF;
@@ -269,10 +326,21 @@ RIGHT PANEL
 
 .blockChart {
   width: 422px;
-  height: 126px;
-  border-bottom: 1px solid #000;
+  height: 130px;
   display: none;
   background-color: #FFF;
+}
+
+.linkChart {
+  font-size: 9px;
+  float: right;
+  height: 10px;
+  margin-right: 10px;
+}
+
+.linkChart a {
+  color: #0047AB;
+  text-decoration: none;
 }
 
 .legendNavTime {
