@@ -14,7 +14,9 @@
     <link rel="stylesheet" href="node_modules/leaflet/dist/leaflet.ie.css" />
   <![endif]-->
   <link rel="stylesheet" href="./css/style.css?1010">
-
+  <script>
+    window.global = window
+  </script>
 </head>
 
 <body>
@@ -205,16 +207,16 @@
     </div>
   </div>
 
-
   <!---LOAD REQUIRED LIBRARIES-->
   <script src="./js/ext/leaflet.js"></script>
   <script src="./js/ext/leaflet-heat.js"></script>
   <script src="./js/ext/turf.min.js"></script>
-  <script src="./js/ext/citysdk.js?1001"></script>
+  <script type="module" src="./js/ext/citysdk.js?1001"></script>
   <script src="./js/ext/nouislider.js"></script>
   <script src="./js/ext/Chart.min.js"></script>
   <script src="./js/ext/moment.js"></script>
   <script src="./js/ext/chartjs-adapter-moment.js"></script>
+  <script type="module" crossorigin src="./js/ext/citysdk-dist.js?1002"></script>
   <!---LOAD REQUIRED DATA-->
   <script src="./data/cde_ped.js?1002"></script>
   <script src="./data/cde_bike.js?1002"></script>
